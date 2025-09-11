@@ -3,7 +3,9 @@ import '../database/database_helper.dart';
 import '../models/template_model.dart';
 
 class AddTemplateDialog extends StatefulWidget {
-  const AddTemplateDialog({super.key});
+  final Template? template; // Torna o template opcional
+
+  const AddTemplateDialog({super.key, this.template});
 
   @override
   _AddTemplateDialogState createState() => _AddTemplateDialogState();
@@ -11,19 +13,35 @@ class AddTemplateDialog extends StatefulWidget {
 
 class _AddTemplateDialogState extends State<AddTemplateDialog> {
   final _formKey = GlobalKey<FormState>();
-  final _tituloController = TextEditingController();
-  final _conteudoController = TextEditingController();
-  final _tagsController = TextEditingController();
+  late TextEditingController _tituloController;
+  late TextEditingController _conteudoController;
+  late TextEditingController _tagsController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Preenche os campos se estiver editando
+    _tituloController = TextEditingController(text: widget.template?.titulo ?? '');
+    _conteudoController = TextEditingController(text: widget.template?.conteudo ?? '');
+    _tagsController = TextEditingController(text: widget.template?.tags.join(', ') ?? '');
+  }
 
   void _saveTemplate() async {
     if (_formKey.currentState!.validate()) {
-      final newTemplate = Template(
+      final isEditing = widget.template != null;
+
+      final templateData = Template(
+        id: widget.template?.id, // Mantém o ID se estiver editando
         titulo: _tituloController.text,
         conteudo: _conteudoController.text,
         tags: _tagsController.text.split(',').map((e) => e.trim()).where((s) => s.isNotEmpty).toList(),
       );
 
-      await DatabaseHelper.instance.create(newTemplate);
+      if (isEditing) {
+        await DatabaseHelper.instance.update(templateData);
+      } else {
+        await DatabaseHelper.instance.create(templateData);
+      }
 
       Navigator.of(context).pop();
     }
@@ -31,8 +49,9 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.template != null;
     return AlertDialog(
-      title: const Text('Novo Template'),
+      title: Text(isEditing ? 'Editar Template' : 'Novo Template'),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,

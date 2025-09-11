@@ -41,6 +41,25 @@ CREATE TABLE templates (
     return template;
   }
 
+  Future<int> update(Template template) async {
+    final db = await instance.database;
+    return db.update(
+      'templates',
+      template.toMap(),
+      where: 'id = ?',
+      whereArgs: [template.id],
+    );
+  }
+
+  Future<int> delete(int id) async {
+    final db = await instance.database;
+    return await db.delete(
+      'templates',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   Future<List<Template>> getAllTemplates() async {
     final db = await instance.database;
     final result = await db.query('templates', orderBy: 'id ASC');

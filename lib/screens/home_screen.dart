@@ -70,7 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _updateStateWithNewData(List<Template> newData) {
     final newTags = <String>{};
     for (var template in newData) {
-      newTags.addAll(template.tags);
+      if (template.tags.first.isNotEmpty) {
+        newTags.addAll(template.tags);
+      }
     }
 
     final sortedTags = newTags.toList()..sort();
@@ -112,10 +114,46 @@ class _HomeScreenState extends State<HomeScreen> {
     _refreshTemplates();
   }
 
+  void _showEditTemplateDialog(Template template) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AddTemplateDialog(template: template),
+    );
+    _refreshTemplates();
+  }
+
+  void _showDeleteConfirmationDialog(Template template) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Exclusão'),
+          content: Text('Você tem certeza que deseja deletar o template "${template.titulo}"?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Deletar', style: TextStyle(color: Colors.red)),
+              onPressed: () async {
+                await DatabaseHelper.instance.delete(template.id!);
+                Navigator.of(context).pop();
+                _refreshTemplates();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Templates Linux')),
+      appBar: AppBar(title: const Text('DocFlow')),
       body: Row(
         children: [
           // Sidebar
@@ -170,29 +208,46 @@ class _HomeScreenState extends State<HomeScreen> {
                                 style: const TextStyle(fontWeight: FontWeight.bold)),
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(t.conteudo),
-                                    const SizedBox(height: 10),
-                                    Wrap(
-                                      spacing: 6,
-                                      children: t.tags
-                                          .map((tag) => Chip(label: Text(tag)))
-                                          .toList(),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    ElevatedButton.icon(
-                                      onPressed: () {
-                                        Clipboard.setData(ClipboardData(text: t.conteudo));
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                              content: Text('Conteúdo copiado!')),
-                                        );
-                                      },
-                                      icon: const Icon(Icons.copy),
-                                      label: const Text('Copiar'),
+                                    const SizedBox(height: 16),
+                                    if (t.tags.first.isNotEmpty)
+                                      Wrap(
+                                        spacing: 6,
+                                        children: t.tags
+                                            .map((tag) => Chip(label: Text(tag)))
+                                            .toList(),
+                                      ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          tooltip: 'Deletar',
+                                          onPressed: () => _showDeleteConfirmationDialog(t),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.edit, color: Colors.blue),
+                                          tooltip: 'Editar',
+                                          onPressed: () => _showEditTemplateDialog(t),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        ElevatedButton.icon(
+                                          onPressed: () {
+                                            Clipboard.setData(ClipboardData(text: t.conteudo));
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                  content: Text('Conteúdo copiado!')),
+                                            );
+                                          },
+                                          icon: const Icon(Icons.copy),
+                                          label: const Text('Copiar'),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
