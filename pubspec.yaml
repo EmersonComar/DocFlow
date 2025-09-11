@@ -1,5 +1,5 @@
-name: hello_templates
-description: Projeto Flutter Desktop Linux com templates e tags
+name: docflow
+description: Um gerenciador de templates e anotações.
 version: 0.1.0
 environment:
   sdk: ">=3.3.0 <4.0.0"
