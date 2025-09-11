@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../models/template_model.dart';
 import '../database/database_helper.dart';
-import 'add_template_dialog.dart'; // Importa o novo diálogo
+import '../theme/theme_notifier.dart';
+import 'add_template_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final data = await DatabaseHelper.instance.getAllTemplates();
 
     if (data.isEmpty) {
-      // Insere dados iniciais se o banco estiver vazio
       final initialTemplates = [
         Template(
           titulo: 'Atualização do Sistema',
@@ -55,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
       for (var template in initialTemplates) {
         await DatabaseHelper.instance.create(template);
       }
-      // Recarrega os templates após a inserção
       final newData = await DatabaseHelper.instance.getAllTemplates();
       _updateStateWithNewData(newData);
     } else {
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _updateStateWithNewData(List<Template> newData) {
     final newTags = <String>{};
     for (var template in newData) {
-      if (template.tags.first.isNotEmpty) {
+      if (template.tags.isNotEmpty && template.tags.first.isNotEmpty) {
         newTags.addAll(template.tags);
       }
     }
@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
       templates = newData;
       allTags = sortedTags;
       selectedTags = newSelectedTags;
-      filterTemplates(); // Aplica filtros com os novos dados
+      filterTemplates();
     });
   }
 
@@ -137,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             TextButton(
-              child: const Text('Deletar', style: TextStyle(color: Colors.red)),
+              child: Text('Deletar', style: TextStyle(color: Theme.of(context).colorScheme.error)),
               onPressed: () async {
                 await DatabaseHelper.instance.delete(template.id!);
                 Navigator.of(context).pop();
@@ -152,26 +152,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('DocFlow')),
+      appBar: AppBar(
+        title: const Text('DocFlow'),
+        actions: [
+          IconButton(
+            icon: Icon(themeNotifier.themeMode == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
+            onPressed: () => themeNotifier.toggleTheme(),
+            tooltip: 'Alterar Tema',
+          ),
+        ],
+      ),
       body: Row(
         children: [
-          // Sidebar
           Container(
             width: 250,
-            color: Colors.grey[200],
-            padding: const EdgeInsets.all(8),
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Text('Filtros', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
                 TextField(
                   controller: searchController,
                   decoration: const InputDecoration(
                     labelText: 'Buscar',
                     prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                    filled: true,
                   ),
                   onChanged: (value) => filterTemplates(),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 24),
+                const Text('Tags', style: TextStyle(fontWeight: FontWeight.bold)),
+                const Divider(),
                 Expanded(
                   child: ListView(
                     children: allTags.map((tag) {
@@ -191,72 +207,70 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          // Conteúdo
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : Container(
-                    padding: const EdgeInsets.all(16),
-                    child: ListView.builder(
-                      itemCount: filteredTemplates.length,
-                      itemBuilder: (context, index) {
-                        Template t = filteredTemplates[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          child: ExpansionTile(
-                            title: Text(t.titulo,
-                                style: const TextStyle(fontWeight: FontWeight.bold)),
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(t.conteudo),
-                                    const SizedBox(height: 16),
-                                    if (t.tags.first.isNotEmpty)
-                                      Wrap(
-                                        spacing: 6,
-                                        children: t.tags
-                                            .map((tag) => Chip(label: Text(tag)))
-                                            .toList(),
-                                      ),
-                                    const SizedBox(height: 16),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.delete, color: Colors.red),
-                                          tooltip: 'Deletar',
-                                          onPressed: () => _showDeleteConfirmationDialog(t),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.edit, color: Colors.blue),
-                                          tooltip: 'Editar',
-                                          onPressed: () => _showEditTemplateDialog(t),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        ElevatedButton.icon(
-                                          onPressed: () {
-                                            Clipboard.setData(ClipboardData(text: t.conteudo));
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                  content: Text('Conteúdo copiado!')),
-                                            );
-                                          },
-                                          icon: const Icon(Icons.copy),
-                                          label: const Text('Copiar'),
-                                        ),
-                                      ],
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: filteredTemplates.length,
+                    itemBuilder: (context, index) {
+                      Template t = filteredTemplates[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 16.0),
+                        child: ExpansionTile(
+                          title: Text(t.titulo, style: const TextStyle(fontWeight: FontWeight.bold)),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(t.conteudo),
+                                  const SizedBox(height: 16),
+                                  if (t.tags.isNotEmpty && t.tags.first.isNotEmpty)
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 4,
+                                      children: t.tags
+                                          .map((tag) => Chip(label: Text(tag)))
+                                          .toList(),
                                     ),
-                                  ],
-                                ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.delete),
+                                        color: Theme.of(context).colorScheme.error,
+                                        tooltip: 'Deletar',
+                                        onPressed: () => _showDeleteConfirmationDialog(t),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        tooltip: 'Editar',
+                                        onPressed: () => _showEditTemplateDialog(t),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          Clipboard.setData(ClipboardData(text: t.conteudo));
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                                content: Text('Conteúdo copiado!')),
+                                          );
+                                        },
+                                        icon: const Icon(Icons.copy),
+                                        label: const Text('Copiar'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
           ),
         ],

@@ -61,7 +61,11 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
             children: [
               TextFormField(
                 controller: _tituloController,
-                decoration: const InputDecoration(labelText: 'Título'),
+                decoration: const InputDecoration(
+                  labelText: 'Título',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira um título';
@@ -72,7 +76,11 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _conteudoController,
-                decoration: const InputDecoration(labelText: 'Conteúdo'),
+                decoration: const InputDecoration(
+                  labelText: 'Conteúdo',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                ),
                 maxLines: 5,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -84,7 +92,11 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _tagsController,
-                decoration: const InputDecoration(labelText: 'Tags (separadas por vírgula)'),
+                decoration: const InputDecoration(
+                  labelText: 'Tags (separadas por vírgula)',
+                  border: OutlineInputBorder(),
+                  filled: true,
+                ),
               ),
             ],
           ),
