@@ -46,3 +46,6 @@ app.*.map.json
 
 # linux
 linux/
+
+
+tar -xzvf elastic_backup.tar.gz -C /var/lib/elasticsearch_backup/
