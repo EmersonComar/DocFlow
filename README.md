@@ -1,16 +1,37 @@
-# hello_world
+# DocFlow
 
-A new Flutter project.
+Um aplicativo Flutter para gerenciar templates e anotações de forma eficiente.
 
-## Getting Started
+## Funcionalidades
 
-This project is a starting point for a Flutter application.
+- Criação, edição e exclusão de templates.
+- Organização de templates por tags.
+- Pesquisa rápida de templates.
+- Cópia fácil do conteúdo do template.
+- Alternância entre tema claro e escuro.
 
-A few resources to get you started if this is your first Flutter project:
+## Como Começar
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Pré-requisitos
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Certifique-se de ter o Flutter SDK instalado. Você pode seguir as instruções em [flutter.dev](https://flutter.dev/docs/get-started/install).
+
+### Instalação
+
+1.  Clone este repositório:
+    ```bash
+    git clone https://github.com/EmersonComar/DocFlow.git
+    cd DocFlow
+    ```
+2.  Obtenha as dependências:
+    ```bash
+    flutter pub get
+    ```
+
+### Executando o Aplicativo
+
+Para executar o aplicativo em um dispositivo ou emulador:
+
+```bash
+flutter run
+```

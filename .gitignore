@@ -43,9 +43,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# linux
-linux/
-
-
-tar -xzvf elastic_backup.tar.gz -C /var/lib/elasticsearch_backup/
