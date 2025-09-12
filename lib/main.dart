@@ -30,12 +30,12 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.light,
-            colorSchemeSeed: Colors.blue,
+            colorSchemeSeed: const Color(0xFF33691E),
           ),
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
-            colorSchemeSeed: Colors.blue,
+            colorSchemeSeed: const Color(0xFF33691E),
           ),
           themeMode: themeNotifier.themeMode,
           home: const HomeScreen(),

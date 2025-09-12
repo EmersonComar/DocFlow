@@ -50,6 +50,8 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.template != null;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return AlertDialog(
       title: Text(isEditing ? 'Editar Template' : 'Novo Template'),
       content: SingleChildScrollView(
@@ -103,13 +105,18 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
         ),
       ),
       actions: [
-        TextButton(
+        TextButton.icon(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          icon: const Icon(Icons.cancel),
+          label: const Text('Cancelar'),
+          style: TextButton.styleFrom(
+            foregroundColor: colorScheme.onSurface,
+          ),
         ),
-        ElevatedButton(
+        ElevatedButton.icon(
           onPressed: _saveTemplate,
-          child: const Text('Salvar'),
+          icon: const Icon(Icons.save),
+          label: const Text('Salvar'),
         ),
       ],
     );

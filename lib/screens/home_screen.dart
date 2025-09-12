@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> allTags = [];
   Map<String, bool> selectedTags = {};
   bool isLoading = true;
+  final Set<int> _expandedTemplates = {};
 
   @override
   void initState() {
@@ -142,8 +143,9 @@ Esperamos que você aproveite o DocFlow!''',
                 Navigator.of(context).pop();
               },
             ),
-            TextButton(
-              child: Text('Deletar', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            TextButton.icon(
+              icon: const Icon(Icons.delete),
+              label: Text('Deletar', style: TextStyle(color: Theme.of(context).colorScheme.error)),
               onPressed: () async {
                 await DatabaseHelper.instance.delete(template.id!);
                 Navigator.of(context).pop();
@@ -159,6 +161,7 @@ Esperamos que você aproveite o DocFlow!''',
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('DocFlow'),
@@ -172,108 +175,151 @@ Esperamos que você aproveite o DocFlow!''',
       ),
       body: Row(
         children: [
-          Container(
+          SizedBox(
             width: 250,
-            color: Theme.of(context).colorScheme.surfaceVariant,
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Filtros', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: searchController,
-                  decoration: const InputDecoration(
-                    labelText: 'Buscar',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(),
-                    filled: true,
-                  ),
-                  onChanged: (value) => filterTemplates(),
+            child: Card(
+              elevation: 0,
+              color: colorScheme.surfaceVariant.withOpacity(0.3),
+              margin: const EdgeInsets.all(8.0),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Filtros', style: Theme.of(context).textTheme.titleLarge),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: searchController,
+                      decoration: const InputDecoration(
+                        labelText: 'Buscar',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(),
+                        filled: true,
+                      ),
+                      onChanged: (value) => filterTemplates(),
+                    ),
+                    const SizedBox(height: 24),
+                    Text('Tags', style: Theme.of(context).textTheme.titleMedium),
+                    const Divider(),
+                    Expanded(
+                      child: ListView(
+                        children: allTags.map((tag) {
+                          return CheckboxListTile(
+                            title: Text(tag),
+                            value: selectedTags[tag] ?? false,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                selectedTags[tag] = value ?? false;
+                              });
+                              filterTemplates();
+                            },
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                const Text('Tags', style: TextStyle(fontWeight: FontWeight.bold)),
-                const Divider(),
-                Expanded(
-                  child: ListView(
-                    children: allTags.map((tag) {
-                      return CheckboxListTile(
-                        title: Text(tag),
-                        value: selectedTags[tag] ?? false,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            selectedTags[tag] = value ?? false;
-                          });
-                          filterTemplates();
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
                     itemCount: filteredTemplates.length,
                     itemBuilder: (context, index) {
-                      Template t = filteredTemplates[index];
+                      final t = filteredTemplates[index];
+                      final isExpanded = _expandedTemplates.contains(t.id);
+
                       return Card(
+                        elevation: 2,
                         margin: const EdgeInsets.only(bottom: 16.0),
-                        child: ExpansionTile(
-                          title: Text(t.titulo, style: const TextStyle(fontWeight: FontWeight.bold)),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(t.conteudo),
-                                  const SizedBox(height: 16),
-                                  if (t.tags.isNotEmpty && t.tags.first.isNotEmpty)
-                                    Wrap(
-                                      spacing: 8,
-                                      runSpacing: 4,
-                                      children: t.tags
-                                          .map((tag) => Chip(label: Text(tag)))
-                                          .toList(),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+                        ),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: colorScheme.onSurface.withOpacity(0.1),
+                          onTap: () {
+                            setState(() {
+                              if (isExpanded) {
+                                _expandedTemplates.remove(t.id);
+                              } else {
+                                _expandedTemplates.add(t.id!);
+                              }
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        t.titulo,
+                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.delete),
-                                        color: Theme.of(context).colorScheme.error,
-                                        tooltip: 'Deletar',
-                                        onPressed: () => _showDeleteConfirmationDialog(t),
-                                      ),
-                                      IconButton(
-                                        icon: const Icon(Icons.edit),
-                                        tooltip: 'Editar',
-                                        onPressed: () => _showEditTemplateDialog(t),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      ElevatedButton.icon(
-                                        onPressed: () {
-                                          Clipboard.setData(ClipboardData(text: t.conteudo));
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                                content: Text('Conteúdo copiado!')),
-                                          );
-                                        },
-                                        icon: const Icon(Icons.copy),
-                                        label: const Text('Copiar'),
-                                      ),
-                                    ],
+                                    Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
+                                    PopupMenuButton<String>(
+                                      onSelected: (value) {
+                                        if (value == 'edit') {
+                                          _showEditTemplateDialog(t);
+                                        } else if (value == 'delete') {
+                                          _showDeleteConfirmationDialog(t);
+                                        }
+                                      },
+                                      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                                        const PopupMenuItem<String>(
+                                          value: 'edit',
+                                          child: ListTile(leading: Icon(Icons.edit), title: Text('Editar')),
+                                        ),
+                                        const PopupMenuItem<String>(
+                                          value: 'delete',
+                                          child: ListTile(leading: Icon(Icons.delete), title: Text('Deletar')),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  t.conteudo,
+                                  maxLines: isExpanded ? null : 3,
+                                  overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                                ),
+                                const SizedBox(height: 16),
+                                if (t.tags.isNotEmpty && t.tags.first.isNotEmpty)
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 4,
+                                    children: t.tags.map((tag) => Chip(label: Text(tag))).toList(),
                                   ),
-                                ],
-                              ),
+                                const SizedBox(height: 16),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      Clipboard.setData(ClipboardData(text: t.conteudo));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Conteúdo copiado!')),
+                                      );
+                                    },
+                                    icon: const Icon(Icons.copy),
+                                    label: const Text('Copiar'),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       );
                     },
