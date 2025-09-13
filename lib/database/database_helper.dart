@@ -1,5 +1,6 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/template_model.dart';
 
 class DatabaseHelper {
@@ -15,7 +16,11 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB(String filePath) async {
-    final dbPath = await getDatabasesPath();
+    // Para compatibilidade com Snap (confinement: strict), precisamos usar um
+    // diretório de dados específico da aplicação.
+    // getApplicationDocumentsDirectory() fornece um caminho seguro para isso.
+    final documentsDirectory = await getApplicationDocumentsDirectory();
+    final dbPath = documentsDirectory.path; // Caminho correto para o Snap
     final path = join(dbPath, filePath);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);

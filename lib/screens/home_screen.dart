@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> allTags = [];
   Map<String, bool> selectedTags = {};
   bool isLoading = true;
+  String? _errorMessage;
   final Set<int> _expandedTemplates = {};
 
   @override
@@ -31,15 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refreshTemplates() async {
     setState(() {
       isLoading = true;
+      _errorMessage = null;
     });
 
-    final data = await DatabaseHelper.instance.getAllTemplates();
+    try {
+      final data = await DatabaseHelper.instance.getAllTemplates();
 
-    if (data.isEmpty) {
-      final initialTemplates = [
-        Template(
-          titulo: 'Tutorial: Como Usar o DocFlow',
-          conteudo: '''Bem-vindo ao DocFlow! Este tutorial rápido irá guiá-lo pelas funcionalidades principais:
+      if (data.isEmpty) {
+        final initialTemplates = [
+          Template(
+            titulo: 'Tutorial: Como Usar o DocFlow',
+            conteudo: '''Bem-vindo ao DocFlow! Este tutorial rápido irá guiá-lo pelas funcionalidades principais:
 
 1.  **Adicionar Novo Template:** Clique no botão de '+' no canto inferior direito para criar uma nova anotação ou template. Preencha o título, conteúdo e adicione tags para facilitar a organização.
 
@@ -56,17 +59,20 @@ class _HomeScreenState extends State<HomeScreen> {
 7.  **Alterar Tema (Claro/Escuro):** No canto superior direito da barra de aplicativos, clique no ícone de sol/lua para alternar entre o tema claro e escuro.
 
 Esperamos que você aproveite o DocFlow!''',
-          tags: ['tutorial'],
-        ),
-      ];
+            tags: ['tutorial'],
+          ),
+        ];
 
-      for (var template in initialTemplates) {
-        await DatabaseHelper.instance.create(template);
+        for (var template in initialTemplates) {
+          await DatabaseHelper.instance.create(template);
+        }
+        final newData = await DatabaseHelper.instance.getAllTemplates();
+        _updateStateWithNewData(newData);
+      } else {
+        _updateStateWithNewData(data);
       }
-      final newData = await DatabaseHelper.instance.getAllTemplates();
-      _updateStateWithNewData(newData);
-    } else {
-      _updateStateWithNewData(data);
+    } catch (e) {
+      _errorMessage = 'Falha ao carregar o banco de dados.\nVerifique as permissões do diretório ou tente reiniciar a aplicação.\n\nErro: $e';
     }
 
     setState(() {
@@ -224,7 +230,21 @@ Esperamos que você aproveite o DocFlow!''',
           ),
           Expanded(
             child: isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator()) 
+                : _errorMessage != null
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          _errorMessage!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    )
                 : ListView.builder(
                     padding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
                     itemCount: filteredTemplates.length,
