@@ -16,11 +16,8 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB(String filePath) async {
-    // Para compatibilidade com Snap (confinement: strict), precisamos usar um
-    // diretório de dados específico da aplicação.
-    // getApplicationDocumentsDirectory() fornece um caminho seguro para isso.
     final documentsDirectory = await getApplicationDocumentsDirectory();
-    final dbPath = documentsDirectory.path; // Caminho correto para o Snap
+    final dbPath = documentsDirectory.path; 
     final path = join(dbPath, filePath);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
@@ -34,42 +31,126 @@ class DatabaseHelper {
 CREATE TABLE templates (
   id $idType,
   titulo $textType,
-  conteudo $textType,
-  tags $textType
+  conteudo $textType
 )
 ''');
+
+    await db.execute('''
+CREATE TABLE tags (
+  id $idType,
+  name $textType UNIQUE
+)
+''');
+
+    await db.execute('''
+CREATE TABLE template_tags (
+  template_id INTEGER NOT NULL,
+  tag_id INTEGER NOT NULL,
+  PRIMARY KEY (template_id, tag_id),
+  FOREIGN KEY (template_id) REFERENCES templates (id) ON DELETE CASCADE,
+  FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE
+)
+''');
+
+    await db.execute('''
+CREATE TABLE user_preferences (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+)''');
   }
 
   Future<Template> create(Template template) async {
     final db = await instance.database;
-    final id = await db.insert('templates', template.toMap());
+    final templateId = await db.insert('templates', template.toMap());
+    template.id = templateId;
+
+    await _updateTemplateTags(template, db);
+
     return template;
   }
 
   Future<int> update(Template template) async {
     final db = await instance.database;
-    return db.update(
+    final result = await db.update(
       'templates',
       template.toMap(),
       where: 'id = ?',
       whereArgs: [template.id],
     );
+
+    await _updateTemplateTags(template, db);
+
+    return result;
+  }
+
+  Future<void> _updateTemplateTags(Template template, Database db) async {
+    await db.delete('template_tags', where: 'template_id = ?', whereArgs: [template.id]);
+
+    for (String tagName in template.tags) {
+      if (tagName.trim().isEmpty) continue;
+
+      int tagId;
+      final existingTags = await db.query('tags', where: 'name = ?', whereArgs: [tagName.trim()]);
+      if (existingTags.isNotEmpty) {
+        tagId = existingTags.first['id'] as int;
+      } else {
+        tagId = await db.insert('tags', {'name': tagName.trim()});
+      }
+
+      await db.insert('template_tags', {'template_id': template.id, 'tag_id': tagId});
+    }
   }
 
   Future<int> delete(int id) async {
     final db = await instance.database;
-    return await db.delete(
+    final result = await db.delete(
       'templates',
       where: 'id = ?',
       whereArgs: [id],
     );
+
+    await _deleteOrphanTags(db);
+
+    return result;
+  }
+
+  Future<void> _deleteOrphanTags(Database db) async {
+    await db.rawDelete('''
+      DELETE FROM tags WHERE id NOT IN (SELECT DISTINCT tag_id FROM template_tags)
+    ''');
   }
 
   Future<List<Template>> getAllTemplates() async {
     final db = await instance.database;
-    final result = await db.query('templates', orderBy: 'id ASC');
+    final result = await db.rawQuery('''
+      SELECT t.id, t.titulo, t.conteudo, GROUP_CONCAT(tags.name) as tags
+      FROM templates t
+      LEFT JOIN template_tags tt ON t.id = tt.template_id
+      LEFT JOIN tags ON tt.tag_id = tags.id
+      GROUP BY t.id
+      ORDER BY t.id ASC
+    ''');
 
-    return result.map((json) => Template.fromMap(json)).toList();
+    return result.map((map) => Template.fromMap(map)).toList();
+  }
+
+
+  Future<void> savePreference(String key, String value) async {
+    final db = await instance.database;
+    await db.insert(
+      'user_preferences',
+      {'key': key, 'value': value},
+      conflictAlgorithm: ConflictAlgorithm.replace, 
+    );
+  }
+
+  Future<String?> getPreference(String key) async {
+    final db = await instance.database;
+    final result = await db.query('user_preferences', where: 'key = ?', whereArgs: [key]);
+    if (result.isNotEmpty) {
+      return result.first['value'] as String?;
+    }
+    return null;
   }
 
   Future close() async {

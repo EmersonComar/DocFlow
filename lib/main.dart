@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'screens/home_screen.dart';
 import 'theme/theme_notifier.dart';
 
-void main() {
-  // Inicializa o SQLite FFI para desktop
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
 
+  final themeNotifier = ThemeNotifier();
+  await themeNotifier.loadTheme();
+
   runApp(
     ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(),
+      create: (_) => themeNotifier,
       child: const MyApp(),
     ),
   );

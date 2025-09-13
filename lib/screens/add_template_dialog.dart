@@ -3,15 +3,15 @@ import '../database/database_helper.dart';
 import '../models/template_model.dart';
 
 class AddTemplateDialog extends StatefulWidget {
-  final Template? template; // Torna o template opcional
+  final Template? template; 
 
   const AddTemplateDialog({super.key, this.template});
 
   @override
-  _AddTemplateDialogState createState() => _AddTemplateDialogState();
+  AddTemplateDialogState createState() => AddTemplateDialogState();
 }
 
-class _AddTemplateDialogState extends State<AddTemplateDialog> {
+class AddTemplateDialogState extends State<AddTemplateDialog> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _tituloController;
   late TextEditingController _conteudoController;
@@ -20,7 +20,6 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
   @override
   void initState() {
     super.initState();
-    // Preenche os campos se estiver editando
     _tituloController = TextEditingController(text: widget.template?.titulo ?? '');
     _conteudoController = TextEditingController(text: widget.template?.conteudo ?? '');
     _tagsController = TextEditingController(text: widget.template?.tags.join(', ') ?? '');
@@ -31,7 +30,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
       final isEditing = widget.template != null;
 
       final templateData = Template(
-        id: widget.template?.id, // Mantém o ID se estiver editando
+        id: widget.template?.id, 
         titulo: _tituloController.text,
         conteudo: _conteudoController.text,
         tags: _tagsController.text.split(',').map((e) => e.trim()).where((s) => s.isNotEmpty).toList(),

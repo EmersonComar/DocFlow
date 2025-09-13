@@ -83,7 +83,8 @@ Esperamos que você aproveite o DocFlow!''',
   void _updateStateWithNewData(List<Template> newData) {
     final newTags = <String>{};
     for (var template in newData) {
-      if (template.tags.isNotEmpty && template.tags.first.isNotEmpty) {
+      final validTags = template.tags.where((tag) => tag.isNotEmpty);
+      if (validTags.isNotEmpty) {
         newTags.addAll(template.tags);
       }
     }
@@ -154,7 +155,7 @@ Esperamos que você aproveite o DocFlow!''',
               label: Text('Deletar', style: TextStyle(color: Theme.of(context).colorScheme.error)),
               onPressed: () async {
                 await DatabaseHelper.instance.delete(template.id!);
-                Navigator.of(context).pop();
+                if (context.mounted) Navigator.of(context).pop();
                 _refreshTemplates();
               },
             ),
@@ -185,7 +186,7 @@ Esperamos que você aproveite o DocFlow!''',
             width: 250,
             child: Card(
               elevation: 0,
-              color: colorScheme.surfaceVariant.withOpacity(0.3),
+              color: colorScheme.surfaceContainerHighest.withAlpha((255 * 0.3).round()),
               margin: const EdgeInsets.all(8.0),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -257,11 +258,11 @@ Esperamos que você aproveite o DocFlow!''',
                         margin: const EdgeInsets.only(bottom: 16.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+                          side: BorderSide(color: colorScheme.outline.withAlpha((255 * 0.2).round())),
                         ),
                         child: InkWell(
                           splashColor: Colors.transparent,
-                          highlightColor: colorScheme.onSurface.withOpacity(0.1),
+                          highlightColor: colorScheme.onSurface.withAlpha((255 * 0.1).round()),
                           onTap: () {
                             setState(() {
                               if (isExpanded) {
