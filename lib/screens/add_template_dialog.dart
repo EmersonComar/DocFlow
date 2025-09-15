@@ -27,6 +27,7 @@ class AddTemplateDialogState extends State<AddTemplateDialog> {
 
   void _saveTemplate() async {
     if (_formKey.currentState!.validate()) {
+      final currentContext = context;
       final isEditing = widget.template != null;
 
       final templateData = Template(
@@ -42,7 +43,9 @@ class AddTemplateDialogState extends State<AddTemplateDialog> {
         await DatabaseHelper.instance.create(templateData);
       }
 
-      Navigator.of(context).pop();
+      if (currentContext.mounted) {
+        Navigator.of(currentContext).pop();
+      }
     }
   }
 

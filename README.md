@@ -22,7 +22,17 @@ O DocFlow foi projetado para ajudar desenvolvedores, escritores e profissionais 
 - **Banco de Dados:** [sqflite](https://pub.dev/packages/sqflite) com [sqflite_common_ffi](https://pub.dev/packages/sqflite_common_ffi) para suporte desktop (Windows, macOS, Linux).
 - **Design:** [Material 3](https://m3.material.io/)
 
-## Como Começar
+## Instalação (linux via Snap)
+
+O DocFlow está disponível na Snap Store. Para instalar, basta ter o `snapd` configurado em sua distribuição Linux e executar o comando abaixo. A instalação pelo canal `edge` garante que você tenha a versão mais recente, ideal para testes.
+
+```sh
+sudo snap install docflow --edge
+```
+
+Após a instalação, você pode encontrar o DocFlow no menu de aplicativos do seu sistema.
+
+## Desenvolvimento
 
 Siga as instruções abaixo para obter uma cópia local do projeto e executá-la.
 

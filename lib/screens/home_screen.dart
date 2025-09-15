@@ -350,8 +350,8 @@ Esperamos que você aproveite o DocFlow!''',
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddTemplateDialog,
-        child: const Icon(Icons.add),
         tooltip: 'Novo Template',
+        child: const Icon(Icons.add),
       ),
     );
   }

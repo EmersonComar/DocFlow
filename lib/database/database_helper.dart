@@ -98,6 +98,8 @@ CREATE TABLE user_preferences (
       }
 
       await db.insert('template_tags', {'template_id': template.id, 'tag_id': tagId});
+      await _deleteOrphanTemplateTagsAndTags(db);
+
     }
   }
 
@@ -109,12 +111,17 @@ CREATE TABLE user_preferences (
       whereArgs: [id],
     );
 
-    await _deleteOrphanTags(db);
+    await _deleteOrphanTemplateTagsAndTags(db);
 
     return result;
   }
 
-  Future<void> _deleteOrphanTags(Database db) async {
+
+    Future<void> _deleteOrphanTemplateTagsAndTags(Database db) async {
+    await db.rawDelete('''
+      DELETE FROM template_tags
+      WHERE template_id IN (SELECT template_id FROM template_tags LEFT JOIN templates ON templates.id = template_tags.template_id WHERE templates.id IS NULL)
+    ''');
     await db.rawDelete('''
       DELETE FROM tags WHERE id NOT IN (SELECT DISTINCT tag_id FROM template_tags)
     ''');
