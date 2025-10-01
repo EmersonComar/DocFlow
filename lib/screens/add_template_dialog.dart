@@ -1,9 +1,10 @@
+import 'package:docflow/providers/template_provider.dart';
 import 'package:flutter/material.dart';
-import '../database/database_helper.dart';
+import 'package:provider/provider.dart';
 import '../models/template_model.dart';
 
 class AddTemplateDialog extends StatefulWidget {
-  final Template? template; 
+  final Template? template;
 
   const AddTemplateDialog({super.key, this.template});
 
@@ -25,27 +26,25 @@ class AddTemplateDialogState extends State<AddTemplateDialog> {
     _tagsController = TextEditingController(text: widget.template?.tags.join(', ') ?? '');
   }
 
-  void _saveTemplate() async {
+  void _saveTemplate() {
     if (_formKey.currentState!.validate()) {
-      final currentContext = context;
+      final provider = Provider.of<TemplateProvider>(context, listen: false);
       final isEditing = widget.template != null;
 
       final templateData = Template(
-        id: widget.template?.id, 
+        id: widget.template?.id,
         titulo: _tituloController.text,
         conteudo: _conteudoController.text,
         tags: _tagsController.text.split(',').map((e) => e.trim()).where((s) => s.isNotEmpty).toList(),
       );
 
       if (isEditing) {
-        await DatabaseHelper.instance.update(templateData);
+        provider.updateTemplate(templateData);
       } else {
-        await DatabaseHelper.instance.create(templateData);
+        provider.addTemplate(templateData);
       }
 
-      if (currentContext.mounted) {
-        Navigator.of(currentContext).pop();
-      }
+      Navigator.of(context).pop();
     }
   }
 

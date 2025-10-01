@@ -1,3 +1,4 @@
+import 'package:docflow/providers/template_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -14,8 +15,11 @@ void main() async {
   await themeNotifier.loadTheme();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => themeNotifier,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => themeNotifier),
+        ChangeNotifierProvider(create: (_) => TemplateProvider()),
+      ],
       child: const MyApp(),
     ),
   );

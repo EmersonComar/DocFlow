@@ -127,16 +127,57 @@ CREATE TABLE user_preferences (
     ''');
   }
 
-  Future<List<Template>> getAllTemplates() async {
+  Future<List<String>> getAllTags() async {
     final db = await instance.database;
-    final result = await db.rawQuery('''
+    final result = await db.query('tags', columns: ['name'], orderBy: 'name ASC');
+    return result.map((map) => map['name'] as String).toList();
+  }
+
+  Future<List<Template>> getTemplates({int limit = 10, int offset = 0, List<String> tags = const [], String searchQuery = ''}) async {
+    final db = await instance.database;
+
+    String query = '''
       SELECT t.id, t.titulo, t.conteudo, GROUP_CONCAT(tags.name) as tags
       FROM templates t
       LEFT JOIN template_tags tt ON t.id = tt.template_id
       LEFT JOIN tags ON tt.tag_id = tags.id
+    ''';
+
+    List<dynamic> params = [];
+    List<String> whereClauses = [];
+
+    if (tags.isNotEmpty) {
+      whereClauses.add('''
+        t.id IN (
+          SELECT tt.template_id
+          FROM template_tags tt
+          JOIN tags t ON tt.tag_id = t.id
+          WHERE t.name IN (${tags.map((_) => '?').join(',')})
+          GROUP BY tt.template_id
+        )
+      ''');
+      params.addAll(tags);
+    }
+
+    if (searchQuery.isNotEmpty) {
+      whereClauses.add('(t.titulo LIKE ? OR t.conteudo LIKE ?)');
+      params.add('%$searchQuery%');
+      params.add('%$searchQuery%');
+    }
+
+    if (whereClauses.isNotEmpty) {
+      query += ' WHERE ${whereClauses.join(' AND ')}';
+    }
+
+    query += '''
       GROUP BY t.id
       ORDER BY t.id ASC
-    ''');
+      LIMIT ? OFFSET ?
+    ''';
+    params.add(limit);
+    params.add(offset);
+
+    final result = await db.rawQuery(query, params);
 
     return result.map((map) => Template.fromMap(map)).toList();
   }
