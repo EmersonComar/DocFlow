@@ -5,7 +5,7 @@ import '../database/database_helper.dart';
 class TemplateProvider extends ChangeNotifier {
   List<Template> _templates = [];
   List<String> _allTags = [];
-  Map<String, bool> _selectedTags = {};
+  final Map<String, bool> _selectedTags = {};
   bool _isLoading = true;
   bool _isLoadingMore = false;
   String? _errorMessage;

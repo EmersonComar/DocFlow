@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/template_model.dart';
 import '../theme/theme_notifier.dart';
 import 'add_template_dialog.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -269,12 +270,25 @@ class _TemplateCardState extends State<_TemplateCard> {
                 ],
               ),
               const SizedBox(height: 8),
-              Text(
-                t.conteudo,
-                maxLines: _isExpanded ? null : 3,
-                overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
-              ),
+              _isExpanded
+                  ? MarkdownBody(
+                      data: t.conteudo,
+                      selectable: true,
+                      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                        p: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                        codeblockPadding: const EdgeInsets.all(16),
+                        codeblockDecoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    )
+                  : Text(
+                      t.conteudo,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                    ),
               const SizedBox(height: 16),
               if (t.tags.isNotEmpty && t.tags.first.isNotEmpty)
                 Wrap(

@@ -2,6 +2,7 @@ import 'package:docflow/providers/template_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/template_model.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class AddTemplateDialog extends StatefulWidget {
   final Template? template;
@@ -55,11 +56,12 @@ class AddTemplateDialogState extends State<AddTemplateDialog> {
 
     return AlertDialog(
       title: Text(isEditing ? 'Editar Template' : 'Novo Template'),
-      content: SingleChildScrollView(
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        height: MediaQuery.of(context).size.height * 0.7,
         child: Form(
           key: _formKey,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
@@ -77,20 +79,53 @@ class AddTemplateDialogState extends State<AddTemplateDialog> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _conteudoController,
-                decoration: const InputDecoration(
-                  labelText: 'Conteúdo',
-                  border: OutlineInputBorder(),
-                  filled: true,
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _conteudoController,
+                        decoration: const InputDecoration(
+                          labelText: 'Conteúdo',
+                          border: OutlineInputBorder(),
+                          filled: true,
+                          alignLabelWithHint: true,
+                        ),
+                        maxLines: null,
+                        expands: true,
+                        textAlignVertical: TextAlignVertical.top,
+                        onChanged: (text) => setState(() {}), // Atualiza a UI no setState
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira o conteúdo';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: colorScheme.outline.withAlpha((255 * 0.2).round())),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Markdown(
+                          data: _conteudoController.text,
+                          padding: const EdgeInsets.all(16),
+                          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                            codeblockPadding: const EdgeInsets.all(16),
+                            codeblockDecoration: BoxDecoration(
+                              color: colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                maxLines: 5,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o conteúdo';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
               TextFormField(
