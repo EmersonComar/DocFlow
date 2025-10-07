@@ -7,7 +7,7 @@ description: |
   DocFlow é uma aplicação que permite gerenciar o fluxo de documentos
   de forma simples e eficiente.
 
-grade: devel
+grade: stable
 confinement: strict
 
 apps:
