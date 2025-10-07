@@ -1,11 +1,32 @@
+import 'dart:io';
 import 'package:docflow/providers/template_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'screens/home_screen.dart';
 import 'theme/theme_notifier.dart';
+import 'package:yaml/yaml.dart';
 
-void main() async {
+void main(List<String> args) {
+  if (args.contains('--help') || args.contains('-h')) {
+    stdout.writeln('Uso: docflow [opções]');
+    stdout.writeln('Opções:');
+    stdout.writeln('  -v, --version    Mostra a versão do aplicativo');
+    stdout.writeln('  -h, --help       Mostra esta mensagem de ajuda');
+    exit(0);
+  }
+
+  if (args.contains('--version') || args.contains('-v')) {
+    final pubspecFile = File('pubspec.yaml').readAsStringSync();
+    final pubspec = loadYaml(pubspecFile);
+    stdout.writeln('DocFlow versão ${pubspec['version']}');
+    exit(0);
+  }
+
+  runGui();
+}
+
+void runGui() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   sqfliteFfiInit();

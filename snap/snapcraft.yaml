@@ -2,10 +2,14 @@ name: docflow
 base: core24
 version: '1.1.0'
 license: Apache-2.0
-summary: Aplicação para gerenciamento de fluxo de documentos
+summary: Um gerenciador de templates de documentos e notas com suporte a Markdown.
 description: |
-  DocFlow é uma aplicação que permite gerenciar o fluxo de documentos
-  de forma simples e eficiente.
+  O DocFlow simplifica sua vida permitindo que você crie, gerencie e reutilize
+  templates de documentos e notas com facilidade. Ideal para equipes e indivíduos
+  que buscam otimizar a criação de documentos repetitivos, o DocFlow oferece
+  uma interface intuitiva, busca rápida, organização com tags e um editor com
+  pré-visualização em Markdown. Aumente sua produtividade e mantenha seus
+  documentos padronizados.
 
 grade: stable
 confinement: strict
