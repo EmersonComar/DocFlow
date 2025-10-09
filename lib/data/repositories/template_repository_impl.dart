@@ -100,6 +100,7 @@ Esperamos que você aproveite o DocFlow!''',
   Future<Result<void>> delete(int id) async {
     try {
       await _database.deleteTemplate(id);
+      await _database.cleanupOrphanedTags();
       return Result.success(null);
     } catch (e) {
       return Result.failure(DatabaseFailure(

@@ -15,9 +15,14 @@ class LocalDatabase {
     _database = await openDatabase(
       path,
       version: 2,
+      onConfigure: _onConfigure,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
+  }
+
+  Future<void> _onConfigure(Database db) async {
+    await db.execute('PRAGMA foreign_keys = ON');
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -115,9 +120,18 @@ class LocalDatabase {
 
   Future<void> _cleanupOrphanedTags() async {
     await db.rawDelete('''
-      DELETE FROM tags 
-      WHERE id NOT IN (SELECT DISTINCT tag_id FROM template_tags)
+      DELETE FROM tags
+      WHERE NOT EXISTS (
+        SELECT 1 
+        FROM template_tags tt 
+        WHERE tt.tag_id = tags.id
+      )
     ''');
+  }
+
+
+  Future<void> cleanupOrphanedTags() async {
+    await _cleanupOrphanedTags();
   }
 
   Future<List<TemplateModel>> queryTemplates({
