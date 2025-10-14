@@ -3,31 +3,20 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/template_model.dart';
 
-class LocalDatabase {
-  Database? _database;
+abstract class Migration {
+  int get version;
+  Future<void> up(Database db);
+  Future<void> down(Database db);
+}
 
-  Future<void> initialize() async {
-    if (_database != null) return;
+class MigrationV1 implements Migration {
+  @override
+  int get version => 1;
 
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, 'templates.db');
-
-    _database = await openDatabase(
-      path,
-      version: 2,
-      onConfigure: _onConfigure,
-      onCreate: _createDB,
-      onUpgrade: _onUpgrade,
-    );
-  }
-
-  Future<void> _onConfigure(Database db) async {
-    await db.execute('PRAGMA foreign_keys = ON');
-  }
-
-  Future<void> _createDB(Database db, int version) async {
+  @override
+  Future<void> up(Database db) async {
     await db.execute('''
-      CREATE TABLE templates (
+      CREATE TABLE IF NOT EXISTS templates (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         titulo TEXT NOT NULL,
         conteudo TEXT NOT NULL
@@ -35,14 +24,14 @@ class LocalDatabase {
     ''');
 
     await db.execute('''
-      CREATE TABLE tags (
+      CREATE TABLE IF NOT EXISTS tags (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE
       )
     ''');
 
     await db.execute('''
-      CREATE TABLE template_tags (
+      CREATE TABLE IF NOT EXISTS template_tags (
         template_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
         PRIMARY KEY (template_id, tag_id),
@@ -52,22 +41,84 @@ class LocalDatabase {
     ''');
 
     await db.execute('''
-      CREATE TABLE user_preferences (
+      CREATE TABLE IF NOT EXISTS user_preferences (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL
       )
     ''');
+  }
 
-    await db.execute('CREATE INDEX idx_template_tags_template ON template_tags(template_id)');
-    await db.execute('CREATE INDEX idx_template_tags_tag ON template_tags(tag_id)');
-    await db.execute('CREATE INDEX idx_tags_name ON tags(name)');
+  @override
+  Future<void> down(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS template_tags');
+    await db.execute('DROP TABLE IF EXISTS tags');
+    await db.execute('DROP TABLE IF EXISTS templates');
+    await db.execute('DROP TABLE IF EXISTS user_preferences');
+  }
+}
+
+class MigrationV2 implements Migration {
+  @override
+  int get version => 2;
+
+  @override
+  Future<void> up(Database db) async {
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_template_tags_template ON template_tags(template_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_template_tags_tag ON template_tags(tag_id)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name)');
+  }
+
+  @override
+  Future<void> down(Database db) async {
+    await db.execute('DROP INDEX IF EXISTS idx_template_tags_template');
+    await db.execute('DROP INDEX IF EXISTS idx_template_tags_tag');
+    await db.execute('DROP INDEX IF EXISTS idx_tags_name');
+  }
+}
+
+class LocalDatabase {
+  Database? _database;
+  
+  static const int _currentVersion = 2;
+  
+  final List<Migration> _migrations = [
+    MigrationV1(),
+    MigrationV2(),
+  ];
+
+  Future<void> initialize() async {
+    if (_database != null) return;
+
+    final documentsDirectory = await getApplicationDocumentsDirectory();
+    final path = join(documentsDirectory.path, 'templates.db');
+
+    _database = await openDatabase(
+      path,
+      version: _currentVersion,
+      onConfigure: _onConfigure,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
+  }
+
+  Future<void> _onConfigure(Database db) async {
+    await db.execute('PRAGMA foreign_keys = ON');
+    await db.execute('PRAGMA journal_mode = WAL');
+    await db.execute('PRAGMA synchronous = NORMAL');
+    await db.execute('PRAGMA cache_size = 10000');
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+    for (final migration in _migrations) {
+      await migration.up(db);
+    }
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_template_tags_template ON template_tags(template_id)');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_template_tags_tag ON template_tags(tag_id)');
-      await db.execute('CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name)');
+    for (final migration in _migrations) {
+      if (migration.version > oldVersion && migration.version <= newVersion) {
+        await migration.up(db);
+      }
     }
   }
 
@@ -128,7 +179,6 @@ class LocalDatabase {
       )
     ''');
   }
-
 
   Future<void> cleanupOrphanedTags() async {
     await _cleanupOrphanedTags();

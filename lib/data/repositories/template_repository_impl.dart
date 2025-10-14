@@ -37,19 +37,12 @@ class TemplateRepositoryImpl implements TemplateRepository {
     final initialTemplate = TemplateModel(
       titulo: 'Tutorial: Como Usar o DocFlow',
       conteudo: '''Bem-vindo ao DocFlow! Este tutorial rápido irá guiá-lo pelas funcionalidades principais:
-
 1.  **Adicionar Novo Template:** Clique no botão de '+' no canto inferior direito para criar uma nova anotação ou template. Preencha o título, conteúdo e adicione tags para facilitar a organização.
-
 2.  **Buscar Templates:** Use a barra de pesquisa no painel esquerdo para encontrar templates por título ou conteúdo.
-
 3.  **Filtrar por Tags:** No painel esquerdo, você pode selecionar tags para filtrar os templates e ver apenas aqueles que correspondem às tags escolhidas.
-
 4.  **Editar Template:** Clique no ícone de três pontos ao lado de um template e selecione "Editar".
-
 5.  **Deletar Template:** Clique no ícone de três pontos ao lado de um template e selecione "Deletar".
-
 6.  **Copiar Conteúdo:** Use o botão 'Copiar' dentro de cada template para copiar rapidamente seu conteúdo para a área de transferência.
-
 7.  **Alterar Tema (Claro/Escuro):** No canto superior direito da barra de aplicativos, clique no ícone de sol/lua para alternar entre o tema claro e escuro.
 
 Esperamos que você aproveite o DocFlow!''',
