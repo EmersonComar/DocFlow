@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/template.dart';
 import '../providers/template_provider.dart';
+import '../utils/markdown_config.dart';
 
 class AddTemplateDialog extends StatefulWidget {
   final Template? template;
@@ -141,15 +142,10 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
                         child: Markdown(
                           data: _markdownPreview,
                           padding: const EdgeInsets.all(16),
-                          styleSheet: MarkdownStyleSheet.fromTheme(
-                            Theme.of(context),
-                          ).copyWith(
-                            codeblockPadding: const EdgeInsets.all(16),
-                            codeblockDecoration: BoxDecoration(
-                              color: colorScheme.surfaceContainerHighest,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
+                          styleSheet: MarkdownConfig.getStyleSheet(context),
+                          builders: {
+                            'code': MarkdownConfig.getCodeBlockBuilder(),
+                          },
                         ),
                       ),
                     ),

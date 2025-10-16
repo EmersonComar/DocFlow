@@ -5,6 +5,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../domain/entities/template.dart';
 import '../providers/template_provider.dart';
 import '../providers/theme_notifier.dart';
+import '../utils/markdown_config.dart';
 import '../widgets/add_template_dialog.dart';
 import '../widgets/filter_panel.dart';
 
@@ -264,16 +265,14 @@ class _TemplateCard extends StatelessWidget {
                   ? MarkdownBody(
                       data: template.conteudo,
                       selectable: true,
-                      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                      styleSheet: MarkdownConfig.getStyleSheet(context).copyWith(
                         p: textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
-                        codeblockPadding: const EdgeInsets.all(16),
-                        codeblockDecoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
                       ),
+                      builders: {
+                        'code': MarkdownConfig.getCodeBlockBuilder(),
+                      },
                     )
                   : Text(
                       template.conteudo,
