@@ -23,7 +23,16 @@ class CodeBlockElementBuilder extends MarkdownElementBuilder {
     if (element.tag != 'code') return null;
 
     final code = element.textContent;
-    final language = element.attributes['class']?.split('-').last;
+    String? language;
+    
+    if (element.attributes['class'] != null) {
+      // Remove 'language-' prefix if present
+      language = element.attributes['class']!.replaceFirst('language-', '');
+    }
+
+    // Normalize language identifier
+    language = _normalizeLanguage(language);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: CodeBlockWithCopy(
@@ -31,5 +40,20 @@ class CodeBlockElementBuilder extends MarkdownElementBuilder {
         language: language,
       ),
     );
+  }
+
+  String? _normalizeLanguage(String? language) {
+    if (language == null) return null;
+    
+    // Map common language aliases to their standard names
+    return switch (language.toLowerCase()) {
+      'js' => 'javascript',
+      'ts' => 'typescript',
+      'py' => 'python',
+      'rb' => 'ruby',
+      'shell' => 'bash',
+      'yml' => 'yaml',
+      _ => language.toLowerCase(),
+    };
   }
 }

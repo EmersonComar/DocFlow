@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_highlighter/flutter_highlighter.dart';
+import 'package:flutter_highlighter/themes/atom-one-dark.dart';
+import 'package:flutter_highlighter/themes/atom-one-light.dart';
 
 class CodeBlockWithCopy extends StatelessWidget {
   final String code;
@@ -26,9 +29,14 @@ class CodeBlockWithCopy extends StatelessWidget {
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(4),
           ),
-          child: SelectableText(
+          child: HighlightView(
             code,
-            style: textTheme.bodyMedium?.copyWith(
+            language: language ?? '',
+            theme: Theme.of(context).brightness == Brightness.dark
+                ? atomOneDarkTheme
+                : atomOneLightTheme,
+            padding: EdgeInsets.zero,
+            textStyle: textTheme.bodyMedium?.copyWith(
               fontFamily: 'monospace',
             ),
           ),
