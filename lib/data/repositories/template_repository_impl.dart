@@ -34,7 +34,7 @@ class TemplateRepositoryImpl implements TemplateRepository {
   }
 
   Future<void> _createInitialTemplate() async {
-    final initialTemplate = TemplateModel(
+    const initialTemplate = TemplateModel(
       titulo: 'Tutorial: Como Usar o DocFlow',
       conteudo: '''Bem-vindo ao DocFlow! Este tutorial rápido irá guiá-lo pelas funcionalidades principais:
 1.  **Adicionar Novo Template:** Clique no botão de '+' no canto inferior direito para criar uma nova anotação ou template. Preencha o título, conteúdo e adicione tags para facilitar a organização.

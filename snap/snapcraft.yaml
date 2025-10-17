@@ -1,6 +1,6 @@
 name: docflow
 base: core24
-version: '1.1.0'
+version: '1.2.0'
 license: Apache-2.0
 summary: Um gerenciador de templates de documentos e notas com suporte a Markdown.
 description: |
