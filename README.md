@@ -12,7 +12,8 @@ O DocFlow foi projetado para ajudar desenvolvedores, escritores e profissionais 
 - **Gerenciamento Completo de Templates:** Crie, edite e delete templates com facilidade através de um diálogo intuitivo.
 - **Busca e Filtragem:** Encontre templates rapidamente pesquisando por título/conteúdo ou filtrando por múltiplas tags.
 - **Cards Expansíveis:** Visualize um trecho do conteúdo ou expanda o card com um clique para ver o texto completo.
-- **Copiar com Um Clique:** O botão "Copiar" permite que você envie o conteúdo do template para a área de transferência instantaneamente.
+- **Destaque de Sintaxe:** O DocFlow agora oferece destaque de sintaxe para blocos de código em Markdown, melhorando a legibilidade.
+- **Copiar Código Facilmente:** Um botão "Copiar" foi adicionado aos blocos de código, permitindo que você os envie para a área de transferência com um único clique.
 - **Banco de Dados Local:** Seus dados são armazenados de forma persistente em um banco de dados SQLite local.
 
 ## Tecnologias Utilizadas
@@ -20,6 +21,8 @@ O DocFlow foi projetado para ajudar desenvolvedores, escritores e profissionais 
 - **Framework:** [Flutter](https://flutter.dev/)
 - **Gerenciamento de Estado:** [Provider](https://pub.dev/packages/provider)
 - **Banco de Dados:** [sqflite](https://pub.dev/packages/sqflite) com [sqflite_common_ffi](https://pub.dev/packages/sqflite_common_ffi) para suporte desktop (Windows, macOS, Linux).
+- **Renderização de Markdown:** [markdown_widget](https://pub.dev/packages/markdown_widget)
+- **Destaque de Sintaxe:** [flutter_highlighter](https://pub.dev/packages/flutter_highlighter)
 - **Design:** [Material 3](https://m3.material.io/)
 
 ## Instalação (linux via Snap)

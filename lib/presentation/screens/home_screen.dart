@@ -1,14 +1,29 @@
-import 'package:docflow/providers/template_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../models/template_model.dart';
-import '../theme/theme_notifier.dart';
-import 'add_template_dialog.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import '../../domain/entities/template.dart';
+import '../providers/template_provider.dart';
+import '../providers/theme_notifier.dart';
+import '../utils/markdown_config.dart';
+import '../widgets/add_template_dialog.dart';
+import '../widgets/filter_panel.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<TemplateProvider>().initialize();
+    });
+  }
 
   void _showAddTemplateDialog(BuildContext context) {
     showDialog(
@@ -19,14 +34,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final themeNotifier = context.watch<ThemeNotifier>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('DocFlow'),
         actions: [
           IconButton(
-            icon: Icon(themeNotifier.themeMode == ThemeMode.light ? Icons.dark_mode : Icons.light_mode),
+            icon: Icon(_getThemeIcon(themeNotifier.themeMode)),
             onPressed: () => themeNotifier.toggleTheme(),
             tooltip: 'Alterar Tema',
           ),
@@ -34,10 +49,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: const Row(
         children: [
-          SizedBox(
-            width: 250,
-            child: _FilterPanel(),
-          ),
+          SizedBox(width: 250, child: FilterPanel()),
           Expanded(child: _TemplateList()),
         ],
       ),
@@ -48,68 +60,16 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-class _FilterPanel extends StatelessWidget {
-  const _FilterPanel();
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final provider = Provider.of<TemplateProvider>(context, listen: false);
-
-    return Card(
-      elevation: 0,
-      color: colorScheme.surfaceContainerHighest.withAlpha((255 * 0.3).round()),
-      margin: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Filtros', style: textTheme.titleLarge),
-            const SizedBox(height: 16),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Buscar',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-                filled: true,
-              ),
-              onChanged: provider.search,
-            ),
-            const SizedBox(height: 24),
-            Text('Tags', style: textTheme.titleMedium),
-            const Divider(),
-            Expanded(
-              child: Consumer<TemplateProvider>(
-                builder: (context, provider, child) {
-                  if (provider.allTags.isEmpty) {
-                    return const Center(child: Text('Nenhuma tag encontrada.'));
-                  }
-                  return ListView.builder(
-                    itemCount: provider.allTags.length,
-                    itemBuilder: (context, index) {
-                      final tag = provider.allTags[index];
-                      return CheckboxListTile(
-                        title: Text(tag),
-                        value: provider.selectedTags[tag] ?? false,
-                        onChanged: (bool? value) {
-                          provider.updateTag(tag, value ?? false);
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  IconData _getThemeIcon(ThemeMode mode) {
+    return switch (mode) {
+      ThemeMode.light => Icons.dark_mode,
+      ThemeMode.dark => Icons.light_mode,
+      ThemeMode.system => Icons.brightness_auto,
+    };
   }
 }
+
 
 class _TemplateList extends StatefulWidget {
   const _TemplateList();
@@ -135,7 +95,8 @@ class _TemplateListState extends State<_TemplateList> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels >= 
+        _scrollController.position.maxScrollExtent * 0.9) {
       context.read<TemplateProvider>().loadMore();
     }
   }
@@ -144,7 +105,7 @@ class _TemplateListState extends State<_TemplateList> {
   Widget build(BuildContext context) {
     return Consumer<TemplateProvider>(
       builder: (context, provider, child) {
-        if (provider.isLoading) {
+        if (provider.isLoading && !provider.isInitialized) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -152,17 +113,39 @@ class _TemplateListState extends State<_TemplateList> {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(
-                provider.errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    provider.errorMessage!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => provider.initialize(),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Tentar Novamente'),
+                  ),
+                ],
               ),
             ),
           );
         }
 
         if (provider.templates.isEmpty) {
-          return const Center(child: Text('Nenhum template encontrado.'));
+          return const Center(
+            child: Text('Nenhum template encontrado.'),
+          );
         }
 
         return ListView.builder(
@@ -171,10 +154,14 @@ class _TemplateListState extends State<_TemplateList> {
           itemCount: provider.templates.length + (provider.isLoadingMore ? 1 : 0),
           itemBuilder: (context, index) {
             if (index == provider.templates.length) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
             }
-            final template = provider.templates[index];
-            return _TemplateCard(template: template);
+            return _TemplateCard(template: provider.templates[index]);
           },
         );
       },
@@ -182,17 +169,10 @@ class _TemplateListState extends State<_TemplateList> {
   }
 }
 
-class _TemplateCard extends StatefulWidget {
+class _TemplateCard extends StatelessWidget {
   final Template template;
 
   const _TemplateCard({required this.template});
-
-  @override
-  State<_TemplateCard> createState() => _TemplateCardState();
-}
-
-class _TemplateCardState extends State<_TemplateCard> {
-  bool _isExpanded = false;
 
   void _showEditTemplateDialog(BuildContext context, Template template) {
     showDialog(
@@ -202,24 +182,30 @@ class _TemplateCardState extends State<_TemplateCard> {
   }
 
   void _showDeleteConfirmationDialog(BuildContext context, Template template) {
-    final provider = Provider.of<TemplateProvider>(context, listen: false);
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Confirmar Exclusão'),
-          content: Text('Você tem certeza que deseja deletar o template "${template.titulo}"?'),
+          content: Text(
+            'Você tem certeza que deseja deletar o template "${template.titulo}"?',
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(dialogContext).pop(),
             ),
             TextButton.icon(
               icon: const Icon(Icons.delete),
-              label: Text('Deletar', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              label: Text(
+                'Deletar',
+                style: TextStyle(
+                  color: Theme.of(dialogContext).colorScheme.error,
+                ),
+              ),
               onPressed: () {
-                provider.deleteTemplate(template.id!);
-                Navigator.of(context).pop();
+                context.read<TemplateProvider>().deleteTemplate(template.id!);
+                Navigator.of(dialogContext).pop();
               },
             ),
           ],
@@ -232,19 +218,22 @@ class _TemplateCardState extends State<_TemplateCard> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final t = widget.template;
+    final provider = context.watch<TemplateProvider>();
+    final isExpanded = provider.isTemplateExpanded(template.id);
 
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 16.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: colorScheme.outline.withAlpha((255 * 0.2).round())),
+        side: BorderSide(
+          color: colorScheme.outline.withAlpha((255 * 0.2).round()),
+        ),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
         highlightColor: colorScheme.onSurface.withAlpha((255 * 0.1).round()),
-        onTap: () => setState(() => _isExpanded = !_isExpanded),
+        onTap: () => provider.toggleTemplateExpansion(template.id),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -256,52 +245,58 @@ class _TemplateCardState extends State<_TemplateCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      t.titulo,
-                      style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      template.titulo,
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Icon(_isExpanded ? Icons.expand_less : Icons.expand_more),
+                  Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
                   _TemplateMenuButton(
-                    template: t,
-                    onEdit: () => _showEditTemplateDialog(context, t),
-                    onDelete: () => _showDeleteConfirmationDialog(context, t),
+                    template: template,
+                    onEdit: () => _showEditTemplateDialog(context, template),
+                    onDelete: () => _showDeleteConfirmationDialog(context, template),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
-              _isExpanded
+              isExpanded
                   ? MarkdownBody(
-                      data: t.conteudo,
+                      data: template.conteudo,
                       selectable: true,
-                      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                        p: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
-                        codeblockPadding: const EdgeInsets.all(16),
-                        codeblockDecoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(4),
+                      styleSheet: MarkdownConfig.getStyleSheet(context).copyWith(
+                        p: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
+                      builders: {
+                        'code': MarkdownConfig.getCodeBlockBuilder(),
+                      },
                     )
                   : Text(
-                      t.conteudo,
+                      template.conteudo,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
               const SizedBox(height: 16),
-              if (t.tags.isNotEmpty && t.tags.first.isNotEmpty)
+              if (template.tags.isNotEmpty && template.tags.first.isNotEmpty)
                 Wrap(
                   spacing: 8,
                   runSpacing: 4,
-                  children: t.tags.map((tag) => Chip(label: Text(tag))).toList(),
+                  children: template.tags
+                      .map((tag) => Chip(label: Text(tag)))
+                      .toList(),
                 ),
               const SizedBox(height: 16),
               Align(
                 alignment: Alignment.centerLeft,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    Clipboard.setData(ClipboardData(text: t.conteudo));
+                    Clipboard.setData(ClipboardData(text: template.conteudo));
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Conteúdo copiado!')),
                     );
@@ -342,13 +337,18 @@ class _TemplateMenuButton extends StatelessWidget {
       itemBuilder: (BuildContext context) => const <PopupMenuEntry<String>>[
         PopupMenuItem<String>(
           value: 'edit',
-          child: ListTile(leading: Icon(Icons.edit), title: Text('Editar')),
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Editar'),
+          ),
         ),
         PopupMenuItem<String>(
           value: 'delete',
-          child: ListTile(leading: Icon(Icons.delete), title: Text('Deletar')),
+          child: ListTile(
+            leading: Icon(Icons.delete),
+            title: Text('Deletar'),
+          ),
         ),
       ],
     );
-  }
-}
+  }}

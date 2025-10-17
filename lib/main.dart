@@ -1,13 +1,16 @@
 import 'dart:io';
-import 'package:docflow/providers/template_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'screens/home_screen.dart';
-import 'theme/theme_notifier.dart';
 import 'package:yaml/yaml.dart';
 
-void main(List<String> args) {
+import 'data/datasources/local_database.dart';
+import 'data/repositories/template_repository_impl.dart';
+import 'presentation/providers/template_provider.dart';
+import 'presentation/providers/theme_notifier.dart';
+import 'presentation/screens/home_screen.dart';
+
+void main(List<String> args) async {
   if (args.contains('--help') || args.contains('-h')) {
     stdout.writeln('Uso: docflow [opções]');
     stdout.writeln('Opções:');
@@ -17,29 +20,40 @@ void main(List<String> args) {
   }
 
   if (args.contains('--version') || args.contains('-v')) {
-    final pubspecFile = File('pubspec.yaml').readAsStringSync();
-    final pubspec = loadYaml(pubspecFile);
-    stdout.writeln('DocFlow versão ${pubspec['version']}');
+    try {
+      final pubspecFile = File('pubspec.yaml').readAsStringSync();
+      final pubspec = loadYaml(pubspecFile);
+      stdout.writeln('DocFlow versão ${pubspec['version']}');
+    } catch (e) {
+      stdout.writeln('DocFlow versão desconhecida');
+    }
     exit(0);
   }
 
-  runGui();
+  await runGui();
 }
 
-void runGui() async {
+Future<void> runGui() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
 
-  final themeNotifier = ThemeNotifier();
+  final database = LocalDatabase();
+  final templateRepository = TemplateRepositoryImpl(database);
+
+  await database.initialize();
+
+  final themeNotifier = ThemeNotifier(database);
   await themeNotifier.loadTheme();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => themeNotifier),
-        ChangeNotifierProvider(create: (_) => TemplateProvider()),
+        ChangeNotifierProvider.value(value: themeNotifier),
+        ChangeNotifierProvider(
+          create: (_) => TemplateProvider(templateRepository),
+        ),
       ],
       child: const MyApp(),
     ),
