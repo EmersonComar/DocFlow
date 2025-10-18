@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:yaml/yaml.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:docflow/generated/app_localizations.dart';
 
 import 'data/datasources/local_database.dart';
 import 'data/repositories/template_repository_impl.dart';
 import 'presentation/providers/template_provider.dart';
 import 'presentation/providers/theme_notifier.dart';
+import 'presentation/providers/locale_provider.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main(List<String> args) async {
@@ -51,6 +54,7 @@ Future<void> runGui() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: themeNotifier),
+  ChangeNotifierProvider(create: (_) => LocaleProvider(database)),
         ChangeNotifierProvider(
           create: (_) => TemplateProvider(templateRepository),
         ),
@@ -65,10 +69,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeNotifier>(
-      builder: (context, themeNotifier, child) {
+    return Consumer2<ThemeNotifier, LocaleProvider>(
+      builder: (context, themeNotifier, localeProvider, child) {
         return MaterialApp(
           title: 'DocFlow',
+          // Localization setup
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: localeProvider.locale,
+          localeResolutionCallback: (locale, supportedLocales) {
+            // Default to Portuguese when detection fails
+            if (locale == null) return const Locale('pt');
+            for (var supported in supportedLocales) {
+              if (supported.languageCode == locale.languageCode) return supported;
+            }
+            return const Locale('pt');
+          },
           theme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.light,

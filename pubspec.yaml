@@ -11,6 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
   sqflite: ^2.3.3
   sqflite_common_ffi: ^2.3.6
   provider: ^6.1.2
@@ -21,4 +24,9 @@ dependencies:
   yaml: ^3.1.2
 
 flutter:
+  generate: true
+  # Note: ARB files are in lib/l10n/. We'll generate localization classes
+  # explicitly with `flutter gen-l10n` so we can keep Portuguese as the
+  # template/default. To add a new language: add `app_xx.arb` in `lib/l10n/`
+  # and re-run the gen-l10n command.
   uses-material-design: true

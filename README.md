@@ -27,13 +27,37 @@ O DocFlow foi projetado para ajudar desenvolvedores, escritores e profissionais 
 
 ## Instalação (linux via Snap)
 
-O DocFlow está disponível na Snap Store. Para instalar, basta ter o `snapd` configurado em sua distribuição Linux e executar o comando abaixo. A instalação pelo canal `edge` garante que você tenha a versão mais recente, ideal para testes.
+O DocFlow está disponível na Snap Store. Para instalar, basta ter o `snapd` configurado em sua distribuição Linux e executar o comando abaixo.
 
 ```sh
-sudo snap install docflow --edge
+sudo snap install docflow 
 ```
 
 Após a instalação, você pode encontrar o DocFlow no menu de aplicativos do seu sistema.
+
+[![Disponível na Snap Store](https://snapcraft.io/pt/dark/install.svg)](https://snapcraft.io/docflow)
+
+## Internacionalização (i18n)
+
+O DocFlow agora suporta múltiplos idiomas e detecta automaticamente o idioma do sistema. Também é possível escolher manualmente o idioma nas opções do aplicativo; a escolha do usuário é persistida localmente para que a preferência seja mantida entre execuções.
+
+- Idiomas suportados: português (pt), inglês (en) e espanhol (es).
+- Comportamento:
+    - Padrão: segue o idioma do sistema quando nenhuma escolha explícita foi feita.
+    - Troca manual: o usuário pode selecionar um idioma no menu do aplicativo; essa escolha é salva na base de dados local (`user_preferences`) e aplicada imediatamente.
+
+Como adicionar um novo idioma:
+
+1. Crie um arquivo ARB em `lib/l10n/` seguindo o padrão `app_xx.arb` (por exemplo, `app_fr.arb` para francês). Use as chaves existentes nos arquivos ARB atuais como referência.
+2. Gere as classes de localização executando:
+
+```bash
+flutter gen-l10n --arb-dir=lib/l10n --template-arb-file=app_pt.arb --output-localization-file=app_localizations.dart --output-dir=lib/generated
+```
+
+3. Atualize qualquer string hard-coded para usar `AppLocalizations.of(context)!.yourKey` e adicione o novo idioma ao seletor de idioma, se desejar.
+
+Observação: O código salva apenas o código do idioma (por exemplo, `pt`, `en`, `es`) na tabela `user_preferences` sob a chave `locale`. Se você precisar de variantes de região (por exemplo `pt_BR`), podemos ajustar a persistência para armazenar o locale completo.
 
 ## Desenvolvimento
 
