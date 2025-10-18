@@ -96,7 +96,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
                 controller: _tituloController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.titleLabel,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   filled: true,
                 ),
                 validator: (value) {
@@ -116,7 +116,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
                         controller: _conteudoController,
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context)!.contentLabel,
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                           filled: true,
                           alignLabelWithHint: true,
                         ),
@@ -158,7 +158,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
                 controller: _tagsController,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.tagsLabel,
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   filled: true,
                 ),
               ),

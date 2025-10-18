@@ -29,7 +29,19 @@
 
   "contentCopied": "¡Contenido copiado!",
   "copy": "Copiar",
-
+  
+  "settings": "Configuración",
+  "theme": "Tema",
+  "systemTheme": "Tema del Sistema",
+  "lightTheme": "Tema Claro",
+  "darkTheme": "Tema Oscuro",
+  "language": "Idioma",
+  "systemLanguage": "Idioma del Sistema",
+  "openProject": "Abrir Proyecto",
+  "newProject": "Nuevo Proyecto",
+  "about": "Acerca de",
+  "selectProject": "Seleccionar Proyecto",
   "changeTheme": "Cambiar Tema",
-  "newTemplateFab": "Nueva Plantilla"
+  "changeLanguage": "Cambiar Idioma",
+  "newTemplateFab": "Añadir nueva plantilla"
 }

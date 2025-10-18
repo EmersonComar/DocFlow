@@ -83,8 +83,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy => 'Copy';
 
   @override
+  String get settings => 'Settings';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get systemTheme => 'System Theme';
+
+  @override
+  String get lightTheme => 'Light Theme';
+
+  @override
+  String get darkTheme => 'Dark Theme';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get systemLanguage => 'System Language';
+
+  @override
+  String get openProject => 'Open Project';
+
+  @override
+  String get newProject => 'New Project';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get selectProject => 'Select Project';
+
+  @override
   String get changeTheme => 'Change Theme';
 
   @override
-  String get newTemplateFab => 'New Template';
+  String get changeLanguage => 'Change Language';
+
+  @override
+  String get newTemplateFab => 'Add new template';
 }

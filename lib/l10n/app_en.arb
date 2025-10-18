@@ -26,10 +26,63 @@
   "confirmDeleteContent": "Are you sure you want to delete the template \"{title}\"?",
   "cancelButton": "Cancel",
   "delete": "Delete",
-
   "contentCopied": "Content copied!",
   "copy": "Copy",
 
+  "settings": "Settings",
+  "@settings": {
+    "description": "Title for the settings screen and menu item"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme selection option in settings"
+  },
+  "systemTheme": "System Theme",
+  "@systemTheme": {
+    "description": "Option to use system theme"
+  },
+  "lightTheme": "Light Theme",
+  "@lightTheme": {
+    "description": "Option to use light theme"
+  },
+  "darkTheme": "Dark Theme",
+  "@darkTheme": {
+    "description": "Option to use dark theme"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language selection option in settings"
+  },
+  "systemLanguage": "System Language",
+  "@systemLanguage": {
+    "description": "Option to use system language"
+  },
+  "openProject": "Open Project",
+  "@openProject": {
+    "description": "Option to open an existing project"
+  },
+  "newProject": "New Project",
+  "@newProject": {
+    "description": "Option to create a new project"
+  },
+  "about": "About",
+  "@about": {
+    "description": "About menu item"
+  },
+  "selectProject": "Select Project",
+  "@selectProject": {
+    "description": "Tooltip for project selection button"
+  },
   "changeTheme": "Change Theme",
-  "newTemplateFab": "New Template"
+  "@changeTheme": {
+    "description": "Tooltip for theme change button"
+  },
+  "changeLanguage": "Change Language",
+  "@changeLanguage": {
+    "description": "Tooltip for language change button"
+  },
+  "newTemplateFab": "Add new template",
+  "@newTemplateFab": {
+    "description": "Tooltip for new template floating action button"
+  }
 }

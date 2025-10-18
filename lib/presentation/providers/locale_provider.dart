@@ -29,6 +29,9 @@ class LocaleProvider extends ChangeNotifier {
     }
   }
 
+  /// Public method to reload the locale from persistent storage.
+  Future<void> reload() async => await _loadSavedLocale();
+
   /// Sets the locale and persists the choice. Use `null` to follow system.
   Future<void> setLocale(Locale? locale) async {
     _locale = locale;

@@ -83,8 +83,44 @@ class AppLocalizationsPt extends AppLocalizations {
   String get copy => 'Copiar';
 
   @override
+  String get settings => 'Configurações';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get systemTheme => 'Tema do Sistema';
+
+  @override
+  String get lightTheme => 'Tema Claro';
+
+  @override
+  String get darkTheme => 'Tema Escuro';
+
+  @override
+  String get language => 'Idioma';
+
+  @override
+  String get systemLanguage => 'Idioma do Sistema';
+
+  @override
+  String get openProject => 'Abrir Projeto';
+
+  @override
+  String get newProject => 'Novo Projeto';
+
+  @override
+  String get about => 'Sobre';
+
+  @override
+  String get selectProject => 'Selecionar Projeto';
+
+  @override
   String get changeTheme => 'Alterar Tema';
 
   @override
-  String get newTemplateFab => 'Novo Template';
+  String get changeLanguage => 'Alterar Idioma';
+
+  @override
+  String get newTemplateFab => 'Adicionar novo template';
 }

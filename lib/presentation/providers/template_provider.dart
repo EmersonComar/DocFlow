@@ -180,8 +180,17 @@ class TemplateProvider extends ChangeNotifier {
       _templates.removeWhere((template) => template.id == id);
       _expandedTemplateIds.remove(id);
       
-      if (_templates.isEmpty) {
-        _selectedTags.clear();
+      // Busca a lista atualizada de tags após a exclusão do template
+      final tagsResult = await _repository.getAllTags();
+      if (tagsResult.isSuccess) {
+        _allTags = tagsResult.data;
+        // Remove tags que não existem mais da seleção
+        _selectedTags.removeWhere((tag, _) => !_allTags.contains(tag));
+      }
+      
+      // Se não houver mais templates ou alguma tag selecionada não existir mais,
+      // faz um refresh completo
+      if (_templates.isEmpty || _selectedTags.values.any((selected) => selected)) {
         await refreshTemplates();
       } else {
         notifyListeners();
