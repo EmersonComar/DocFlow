@@ -21,12 +21,20 @@ dependencies:
   path: ^1.9.0
   flutter_markdown: ^0.7.1
   flutter_highlighter: ^0.1.1
+  markdown: ^7.3.0
   yaml: ^3.1.2
+  file_selector: ^1.0.4
+  shared_preferences: ^2.1.1
+  package_info_plus: ^9.0.0
 
 flutter:
   generate: true
-  # Note: ARB files are in lib/l10n/. We'll generate localization classes
-  # explicitly with `flutter gen-l10n` so we can keep Portuguese as the
-  # template/default. To add a new language: add `app_xx.arb` in `lib/l10n/`
-  # and re-run the gen-l10n command.
   uses-material-design: true
+
+flutter_intl:
+  enabled: true
+  arb_dir: lib/l10n
+  output_dir: lib/generated
+  class_name: AppLocalizations
+  main_locale: en
+  use_deferred_loading: false

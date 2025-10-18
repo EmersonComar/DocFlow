@@ -28,8 +28,20 @@
   "delete": "Deletar",
 
   "contentCopied": "Conteúdo copiado!",
-  "copy": "Copiar",
-
+  
+  "settings": "Configurações",
+  "theme": "Tema",
+  "systemTheme": "Tema do Sistema",
+  "lightTheme": "Tema Claro",
+  "darkTheme": "Tema Escuro",
+  "language": "Idioma",
+  "systemLanguage": "Idioma do Sistema",
+  "openProject": "Abrir Projeto",
+  "newProject": "Novo Projeto",
+  "about": "Sobre",
+  "selectProject": "Selecionar Projeto",
   "changeTheme": "Alterar Tema",
-  "newTemplateFab": "Novo Template"
+  "changeLanguage": "Alterar Idioma",
+  "newTemplateFab": "Adicionar novo template",
+  "copy": "Copiar"
 }

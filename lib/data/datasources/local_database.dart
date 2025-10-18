@@ -86,11 +86,24 @@ class LocalDatabase {
     MigrationV2(),
   ];
 
-  Future<void> initialize() async {
+  /// Initialize the database. If [dbPath] is provided the database will be
+  /// opened/created at that path. Otherwise it falls back to the default
+  /// application documents directory (legacy behavior).
+  /// If [forceNew] is true, any existing database at [dbPath] will be deleted.
+  Future<void> initialize({String? dbPath, bool forceNew = false}) async {
     if (_database != null) return;
 
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentsDirectory.path, 'templates.db');
+    final path = dbPath ??
+        join((await getApplicationDocumentsDirectory()).path, 'templates.db');
+
+    if (forceNew && dbPath != null) {
+      // Deleta o banco existente, se houver
+      try {
+        await deleteDatabase(path);
+      } catch (_) {
+        // Ignora erros se o arquivo não existir
+      }
+    }
 
     _database = await openDatabase(
       path,
