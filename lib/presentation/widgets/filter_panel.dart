@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:docflow/generated/app_localizations.dart';
 import '../providers/template_provider.dart';
 
 class FilterPanel extends StatelessWidget {
@@ -20,11 +21,11 @@ class FilterPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Filtros', style: textTheme.titleLarge),
+            Text(AppLocalizations.of(context)!.filters, style: textTheme.titleLarge),
             const SizedBox(height: 16),
             TextField(
-              decoration: const InputDecoration(
-                labelText: 'Buscar',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.search,
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
                 filled: true,
@@ -32,14 +33,14 @@ class FilterPanel extends StatelessWidget {
               onChanged: provider.search,
             ),
             const SizedBox(height: 24),
-            Text('Tags', style: textTheme.titleMedium),
+            Text(AppLocalizations.of(context)!.tags, style: textTheme.titleMedium),
             const Divider(),
             Expanded(
               child: Consumer<TemplateProvider>(
                 builder: (context, provider, child) {
                   if (provider.allTags.isEmpty) {
-                    return const Center(
-                      child: Text('Nenhuma tag encontrada.'),
+                    return Center(
+                      child: Text(AppLocalizations.of(context)!.noTagsFound),
                     );
                   }
                   return ListView.builder(

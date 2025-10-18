@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
+import 'package:docflow/generated/app_localizations.dart';
 import '../../domain/entities/template.dart';
 import '../providers/template_provider.dart';
 import '../utils/markdown_config.dart';
@@ -82,7 +83,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Editar Template' : 'Novo Template'),
+      title: Text(isEditing ? AppLocalizations.of(context)!.editTemplate : AppLocalizations.of(context)!.newTemplate),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         height: MediaQuery.of(context).size.height * 0.7,
@@ -93,14 +94,14 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
             children: [
               TextFormField(
                 controller: _tituloController,
-                decoration: const InputDecoration(
-                  labelText: 'Título',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.titleLabel,
                   border: OutlineInputBorder(),
                   filled: true,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Por favor, insira um título';
+                    return AppLocalizations.of(context)!.pleaseInsertTitle;
                   }
                   return null;
                 },
@@ -113,8 +114,8 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
                     Expanded(
                       child: TextFormField(
                         controller: _conteudoController,
-                        decoration: const InputDecoration(
-                          labelText: 'Conteúdo',
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.contentLabel,
                           border: OutlineInputBorder(),
                           filled: true,
                           alignLabelWithHint: true,
@@ -124,7 +125,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
                         textAlignVertical: TextAlignVertical.top,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Por favor, insira o conteúdo';
+                            return AppLocalizations.of(context)!.pleaseInsertContent;
                           }
                           return null;
                         },
@@ -155,8 +156,8 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _tagsController,
-                decoration: const InputDecoration(
-                  labelText: 'Tags (separadas por vírgula)',
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.tagsLabel,
                   border: OutlineInputBorder(),
                   filled: true,
                 ),
@@ -169,7 +170,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
         TextButton.icon(
           onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(Icons.cancel),
-          label: const Text('Cancelar'),
+          label: Text(AppLocalizations.of(context)!.cancel),
           style: TextButton.styleFrom(
             foregroundColor: colorScheme.onSurface,
           ),
@@ -177,7 +178,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
         ElevatedButton.icon(
           onPressed: _saveTemplate,
           icon: const Icon(Icons.save),
-          label: const Text('Salvar'),
+          label: Text(AppLocalizations.of(context)!.save),
         ),
       ],
     );

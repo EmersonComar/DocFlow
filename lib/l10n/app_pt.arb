@@ -1,0 +1,35 @@
+{
+  "@@locale": "pt",
+  "appTitle": "DocFlow",
+
+  "filters": "Filtros",
+  "search": "Buscar",
+  "tags": "Tags",
+  "noTagsFound": "Nenhuma tag encontrada.",
+
+  "copyCodeSnack": "Código copiado!",
+  "copyCodeTooltip": "Copiar código",
+
+  "editTemplate": "Editar Template",
+  "newTemplate": "Novo Template",
+  "cancel": "Cancelar",
+  "save": "Salvar",
+  "titleLabel": "Título",
+  "contentLabel": "Conteúdo",
+  "pleaseInsertTitle": "Por favor, insira um título",
+  "pleaseInsertContent": "Por favor, insira o conteúdo",
+  "tagsLabel": "Tags (separadas por vírgula)",
+
+  "tryAgain": "Tentar Novamente",
+  "noTemplatesFound": "Nenhum template encontrado.",
+  "confirmDeleteTitle": "Confirmar Exclusão",
+  "confirmDeleteContent": "Você tem certeza que deseja deletar o template \"{title}\"?",
+  "cancelButton": "Cancelar",
+  "delete": "Deletar",
+
+  "contentCopied": "Conteúdo copiado!",
+  "copy": "Copiar",
+
+  "changeTheme": "Alterar Tema",
+  "newTemplateFab": "Novo Template"
+}

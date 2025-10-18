@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_highlighter/flutter_highlighter.dart';
 import 'package:flutter_highlighter/themes/atom-one-dark.dart';
 import 'package:flutter_highlighter/themes/atom-one-light.dart';
+import 'package:docflow/generated/app_localizations.dart';
 
 class CodeBlockWithCopy extends StatelessWidget {
   final String code;
@@ -56,10 +57,10 @@ class CodeBlockWithCopy extends StatelessWidget {
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: code));
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Código copiado!')),
+                  SnackBar(content: Text(AppLocalizations.of(context)!.copyCodeSnack)),
                 );
               },
-              tooltip: 'Copiar código',
+              tooltip: AppLocalizations.of(context)!.copyCodeTooltip,
             ),
           ),
         ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import '../providers/locale_provider.dart';
+import 'package:docflow/generated/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../domain/entities/template.dart';
 import '../providers/template_provider.dart';
@@ -35,15 +37,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = context.watch<ThemeNotifier>();
+    final localeProvider = context.watch<LocaleProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DocFlow'),
+        title: Text(AppLocalizations.of(context)!.appTitle),
         actions: [
           IconButton(
             icon: Icon(_getThemeIcon(themeNotifier.themeMode)),
             onPressed: () => themeNotifier.toggleTheme(),
-            tooltip: 'Alterar Tema',
+            tooltip: AppLocalizations.of(context)!.changeTheme,
+          ),
+          PopupMenuButton<Locale?>(
+            onSelected: (locale) => localeProvider.setLocale(locale),
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: null, child: Text('System')),
+              PopupMenuItem(value: const Locale('pt'), child: const Text('Português')),
+              PopupMenuItem(value: const Locale('en'), child: const Text('English')),
+              PopupMenuItem(value: const Locale('es'), child: const Text('Español')),
+            ],
+            tooltip: 'Idioma',
           ),
         ],
       ),
@@ -55,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTemplateDialog(context),
-        tooltip: 'Novo Template',
+        tooltip: AppLocalizations.of(context)!.newTemplateFab,
         child: const Icon(Icons.add),
       ),
     );
@@ -134,7 +147,7 @@ class _TemplateListState extends State<_TemplateList> {
                   ElevatedButton.icon(
                     onPressed: () => provider.initialize(),
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Tentar Novamente'),
+                    label: Text(AppLocalizations.of(context)!.tryAgain),
                   ),
                 ],
               ),
@@ -143,8 +156,8 @@ class _TemplateListState extends State<_TemplateList> {
         }
 
         if (provider.templates.isEmpty) {
-          return const Center(
-            child: Text('Nenhum template encontrado.'),
+          return Center(
+            child: Text(AppLocalizations.of(context)!.noTemplatesFound),
           );
         }
 
@@ -184,33 +197,33 @@ class _TemplateCard extends StatelessWidget {
   void _showDeleteConfirmationDialog(BuildContext context, Template template) {
     showDialog(
       context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text('Confirmar Exclusão'),
-          content: Text(
-            'Você tem certeza que deseja deletar o template "${template.titulo}"?',
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () => Navigator.of(dialogContext).pop(),
+        builder: (BuildContext dialogContext) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.confirmDeleteTitle),
+            content: Text(
+              AppLocalizations.of(context)!.confirmDeleteContent(template.titulo),
             ),
-            TextButton.icon(
-              icon: const Icon(Icons.delete),
-              label: Text(
-                'Deletar',
-                style: TextStyle(
-                  color: Theme.of(dialogContext).colorScheme.error,
-                ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(AppLocalizations.of(context)!.cancelButton),
+                onPressed: () => Navigator.of(dialogContext).pop(),
               ),
-              onPressed: () {
-                context.read<TemplateProvider>().deleteTemplate(template.id!);
-                Navigator.of(dialogContext).pop();
-              },
-            ),
-          ],
-        );
-      },
+              TextButton.icon(
+                icon: const Icon(Icons.delete),
+                label: Text(
+                  AppLocalizations.of(context)!.delete,
+                  style: TextStyle(
+                    color: Theme.of(dialogContext).colorScheme.error,
+                  ),
+                ),
+                onPressed: () {
+                  context.read<TemplateProvider>().deleteTemplate(template.id!);
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+            ],
+          );
+        },
     );
   }
 
@@ -298,11 +311,11 @@ class _TemplateCard extends StatelessWidget {
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: template.conteudo));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Conteúdo copiado!')),
+                      SnackBar(content: Text(AppLocalizations.of(context)!.contentCopied)),
                     );
                   },
                   icon: const Icon(Icons.copy),
-                  label: const Text('Copiar'),
+                  label: Text(AppLocalizations.of(context)!.copy),
                 ),
               ),
             ],
@@ -334,19 +347,19 @@ class _TemplateMenuButton extends StatelessWidget {
           onDelete();
         }
       },
-      itemBuilder: (BuildContext context) => const <PopupMenuEntry<String>>[
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         PopupMenuItem<String>(
           value: 'edit',
           child: ListTile(
-            leading: Icon(Icons.edit),
-            title: Text('Editar'),
+            leading: const Icon(Icons.edit),
+            title: Text(AppLocalizations.of(context)!.editTemplate),
           ),
         ),
         PopupMenuItem<String>(
           value: 'delete',
           child: ListTile(
-            leading: Icon(Icons.delete),
-            title: Text('Deletar'),
+            leading: const Icon(Icons.delete),
+            title: Text(AppLocalizations.of(context)!.delete),
           ),
         ),
       ],
