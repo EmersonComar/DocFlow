@@ -140,8 +140,9 @@ class LocalDatabase {
     );
   }
 
-  Future<int> deleteTemplate(int id) async {
-    return await db.delete('templates', where: 'id = ?', whereArgs: [id]);
+  Future<void> deleteTemplate(int id) async {
+    await db.delete('templates', where: 'id = ?', whereArgs: [id]);
+    await _cleanupOrphanedTags();
   }
 
   Future<void> updateTemplateTags(int templateId, List<String> tags) async {

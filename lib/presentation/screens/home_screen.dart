@@ -50,11 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           PopupMenuButton<Locale?>(
             onSelected: (locale) => localeProvider.setLocale(locale),
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: null, child: Text('System')),
-              PopupMenuItem(value: const Locale('pt'), child: const Text('Português')),
-              PopupMenuItem(value: const Locale('en'), child: const Text('English')),
-              PopupMenuItem(value: const Locale('es'), child: const Text('Español')),
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: null, child: Text('System')),
+              PopupMenuItem(value:  Locale('pt'), child:  Text('Português')),
+              PopupMenuItem(value:  Locale('en'), child:  Text('English')),
+              PopupMenuItem(value:  Locale('es'), child:  Text('Español')),
             ],
             tooltip: 'Idioma',
           ),

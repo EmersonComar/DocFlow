@@ -26,8 +26,8 @@ class FilterPanel extends StatelessWidget {
             TextField(
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.search,
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 filled: true,
               ),
               onChanged: provider.search,

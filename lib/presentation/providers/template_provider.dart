@@ -177,15 +177,7 @@ class TemplateProvider extends ChangeNotifier {
     final result = await _repository.delete(id);
     
     if (result.isSuccess) {
-      _templates.removeWhere((template) => template.id == id);
-      _expandedTemplateIds.remove(id);
-      
-      if (_templates.isEmpty) {
-        _selectedTags.clear();
-        await refreshTemplates();
-      } else {
-        notifyListeners();
-      }
+      await refreshTemplates();
     } else {
       _errorMessage = result.failure.message;
       notifyListeners();
