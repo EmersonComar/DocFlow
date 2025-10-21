@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:docflow/generated/app_localizations.dart';
 import '../../domain/entities/template.dart';
 import '../providers/template_provider.dart';
-import '../utils/markdown_config.dart';
+
 
 class AddTemplateDialog extends StatefulWidget {
   final Template? template;
@@ -140,13 +140,14 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Markdown(
-                          data: _markdownPreview,
-                          padding: const EdgeInsets.all(16),
-                          styleSheet: MarkdownConfig.getStyleSheet(context),
-                          builders: {
-                            'code': MarkdownConfig.getCodeBlockBuilder(),
-                          },
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: GptMarkdown(
+                              _markdownPreview,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
                         ),
                       ),
                     ),

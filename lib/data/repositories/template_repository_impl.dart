@@ -3,6 +3,7 @@ import '../../core/utils/result.dart';
 import '../../domain/entities/template.dart';
 import '../../domain/repositories/template_repository.dart';
 import '../datasources/local_database.dart';
+import '../datasources/initial_data.dart';
 import '../models/template_model.dart';
 
 class TemplateRepositoryImpl implements TemplateRepository {
@@ -20,7 +21,7 @@ class TemplateRepositoryImpl implements TemplateRepository {
       
       final templates = await _database.queryTemplates(limit: 1);
       if (templates.isEmpty) {
-        await _createInitialTemplate();
+        await createInitialData(_database);
       }
       
       _initialized = true;
@@ -31,26 +32,6 @@ class TemplateRepositoryImpl implements TemplateRepository {
         e,
       ));
     }
-  }
-
-  Future<void> _createInitialTemplate() async {
-    const initialTemplate = TemplateModel(
-      titulo: 'Tutorial: Como Usar o DocFlow',
-      conteudo: '''Bem-vindo ao DocFlow! Este tutorial rápido irá guiá-lo pelas funcionalidades principais:
-1.  **Adicionar Novo Template:** Clique no botão de '+' no canto inferior direito para criar uma nova anotação ou template. Preencha o título, conteúdo e adicione tags para facilitar a organização.
-2.  **Buscar Templates:** Use a barra de pesquisa no painel esquerdo para encontrar templates por título ou conteúdo.
-3.  **Filtrar por Tags:** No painel esquerdo, você pode selecionar tags para filtrar os templates e ver apenas aqueles que correspondem às tags escolhidas.
-4.  **Editar Template:** Clique no ícone de três pontos ao lado de um template e selecione "Editar".
-5.  **Deletar Template:** Clique no ícone de três pontos ao lado de um template e selecione "Deletar".
-6.  **Copiar Conteúdo:** Use o botão 'Copiar' dentro de cada template para copiar rapidamente seu conteúdo para a área de transferência.
-7.  **Alterar Tema (Claro/Escuro):** No canto superior direito da barra de aplicativos, clique no ícone de sol/lua para alternar entre o tema claro e escuro.
-
-Esperamos que você aproveite o DocFlow!''',
-      tags: ['tutorial'],
-    );
-
-    final id = await _database.insertTemplate(initialTemplate);
-    await _database.updateTemplateTags(id, initialTemplate.tags);
   }
 
   @override
