@@ -103,9 +103,9 @@ class LocalDatabase {
 
   Future<void> _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
-    await db.execute('PRAGMA journal_mode = WAL');
-    await db.execute('PRAGMA synchronous = NORMAL');
-    await db.execute('PRAGMA cache_size = 10000');
+    await db.execute('PRAGMA journal_mode = DELETE');
+    await db.execute('PRAGMA synchronous = FULL');
+    await db.execute('PRAGMA cache_size = 5000');
   }
 
   Future<void> _onCreate(Database db, int version) async {

@@ -42,16 +42,20 @@ Future<void> runGui() async {
   final database = LocalDatabase();
   final templateRepository = TemplateRepositoryImpl(database);
 
+  // Adiciona o observador do ciclo de vida.
+  final lifecycleObserver = AppLifecycleObserver(database);
+  WidgetsBinding.instance.addObserver(lifecycleObserver);
+
   await database.initialize();
 
   final themeNotifier = ThemeNotifier(database);
-  await themeNotifier.loadTheme();
+await themeNotifier.loadTheme();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: themeNotifier),
-  ChangeNotifierProvider(create: (_) => LocaleProvider(database)),
+        ChangeNotifierProvider(create: (_) => LocaleProvider(database)),
         ChangeNotifierProvider(
           create: (_) => TemplateProvider(templateRepository),
         ),
@@ -59,6 +63,19 @@ Future<void> runGui() async {
       child: const MyApp(),
     ),
   );
+}
+
+class AppLifecycleObserver extends WidgetsBindingObserver {
+  final LocalDatabase _database;
+
+  AppLifecycleObserver(this._database);
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      _database.close();
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
