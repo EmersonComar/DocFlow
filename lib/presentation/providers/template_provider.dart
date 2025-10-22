@@ -164,8 +164,20 @@ class TemplateProvider extends ChangeNotifier {
 
   Future<void> updateTemplate(Template template) async {
     final result = await _repository.update(template);
-    
     if (result.isSuccess) {
+      final activeTags = _selectedTags.entries
+          .where((e) => e.value)
+          .map((e) => e.key)
+          .toList();
+      if (activeTags.isNotEmpty) {
+        final templatesResult = await _repository.getTemplates(
+          tags: activeTags,
+          searchQuery: _searchQuery,
+        );
+        if (templatesResult.isSuccess && templatesResult.data.isEmpty) {
+          _selectedTags.clear();
+        }
+      }
       await refreshTemplates();
     } else {
       _errorMessage = result.failure.message;
@@ -175,8 +187,20 @@ class TemplateProvider extends ChangeNotifier {
 
   Future<void> deleteTemplate(int id) async {
     final result = await _repository.delete(id);
-    
     if (result.isSuccess) {
+      final activeTags = _selectedTags.entries
+          .where((e) => e.value)
+          .map((e) => e.key)
+          .toList();
+      if (activeTags.isNotEmpty) {
+        final templatesResult = await _repository.getTemplates(
+          tags: activeTags,
+          searchQuery: _searchQuery,
+        );
+        if (templatesResult.isSuccess && templatesResult.data.isEmpty) {
+          _selectedTags.clear();
+        }
+      }
       await refreshTemplates();
     } else {
       _errorMessage = result.failure.message;
