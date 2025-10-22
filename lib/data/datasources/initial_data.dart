@@ -12,6 +12,7 @@ class InitialData {
 5.  **Deletar Template:** Clique no ícone de três pontos ao lado de um template e selecione "Deletar".
 6.  **Copiar Conteúdo:** Use o botão 'Copiar' dentro de cada template para copiar rapidamente seu conteúdo para a área de transferência.
 7.  **Alterar Tema (Claro/Escuro):** No canto superior direito da barra de aplicativos, clique no ícone de sol/lua para alternar entre o tema claro e escuro.
+8.  **Alterar idioma:** No canto superior direito também terá um campo para alterar o idioma da aplicação.
 
 Esperamos que você aproveite o DocFlow!''',
     tags: ['tutorial'],
