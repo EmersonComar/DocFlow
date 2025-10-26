@@ -14,18 +14,18 @@ import 'presentation/screens/home_screen.dart';
 
 void main(List<String> args) async {
   if (args.contains('--help') || args.contains('-h')) {
-    stdout.writeln('Uso: docflow [opções]');
-    stdout.writeln('Opções:');
-    stdout.writeln('  -v, --version    Mostra a versão do aplicativo');
-    stdout.writeln('  -h, --help       Mostra esta mensagem de ajuda');
+    stdout.writeln('Usage: docflow [options]');
+    stdout.writeln('Options:');
+    stdout.writeln('  -v, --version    Shows the application version');
+    stdout.writeln('  -h, --help       Display this help message');
     exit(0);
   }
 
   if (args.contains('--version') || args.contains('-v')) {
     try {
-      stdout.writeln('DocFlow versão 1.3.2');
+      stdout.writeln('DocFlow version 1.3.3');
     } catch (e) {
-      stdout.writeln('DocFlow versão desconhecida');
+      stdout.writeln('DocFlow version unknown');
     }
     exit(0);
   }
@@ -46,10 +46,8 @@ Future<void> runGui() async {
   final lifecycleObserver = AppLifecycleObserver(database);
   WidgetsBinding.instance.addObserver(lifecycleObserver);
 
-  await database.initialize();
-
   final themeNotifier = ThemeNotifier(database);
-await themeNotifier.loadTheme();
+  await themeNotifier.loadTheme();
 
   runApp(
     MultiProvider(
@@ -64,7 +62,6 @@ await themeNotifier.loadTheme();
     ),
   );
 }
-
 class AppLifecycleObserver extends WidgetsBindingObserver {
   final LocalDatabase _database;
 

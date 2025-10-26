@@ -66,7 +66,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDeleteTitle => 'Confirm Deletion';
 
   @override
-  String confirmDeleteContent(Object title) {
+  String confirmDeleteContent(String title) {
     return 'Are you sure you want to delete the template \"$title\"?';
   }
 
@@ -87,4 +87,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newTemplateFab => 'New Template';
+
+  @override
+  String unexpectedError(String error) {
+    return 'Unexpected error: $error';
+  }
+
+  @override
+  String loadMoreFailed(String error) {
+    return 'Failed to load more templates: $error';
+  }
+
+  @override
+  String databaseInitializationFailed(String error) {
+    return 'Failed to initialize database: $error';
+  }
+
+  @override
+  String createTemplateFailed(String error) {
+    return 'Failed to create template: $error';
+  }
+
+  @override
+  String get templateIdCannotBeNull => 'Template ID cannot be null';
+
+  @override
+  String updateTemplateFailed(String error) {
+    return 'Failed to update template: $error';
+  }
+
+  @override
+  String deleteTemplateFailed(String error) {
+    return 'Failed to delete template: $error';
+  }
+
+  @override
+  String loadTemplatesFailed(String error) {
+    return 'Failed to load templates: $error';
+  }
+
+  @override
+  String loadTagsFailed(String error) {
+    return 'Failed to load tags: $error';
+  }
+
+  @override
+  String get unknownError => 'An unknown error occurred';
 }

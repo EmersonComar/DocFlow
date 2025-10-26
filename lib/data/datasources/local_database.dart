@@ -208,12 +208,9 @@ class LocalDatabase {
           FROM template_tags tt
           JOIN tags tg ON tt.tag_id = tg.id
           WHERE tg.name IN (${tags.map((_) => '?').join(',')})
-          GROUP BY tt.template_id
-          HAVING COUNT(DISTINCT tg.id) = ?
         )
       ''');
       params.addAll(tags);
-      params.add(tags.length);
     }
 
     if (searchQuery.isNotEmpty) {
@@ -223,7 +220,7 @@ class LocalDatabase {
     }
 
     if (whereClauses.isNotEmpty) {
-      buffer.write(' WHERE ${whereClauses.join(' OR ')}');
+      buffer.write(' WHERE ${whereClauses.join(' AND ')}');
     }
 
     buffer.write(' GROUP BY t.id ORDER BY t.id DESC LIMIT ? OFFSET ?');

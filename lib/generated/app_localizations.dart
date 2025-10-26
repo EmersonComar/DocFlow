@@ -218,7 +218,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete the template \"{title}\"?'**
-  String confirmDeleteContent(Object title);
+  String confirmDeleteContent(String title);
 
   /// No description provided for @cancelButton.
   ///
@@ -255,6 +255,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New Template'**
   String get newTemplateFab;
+
+  /// No description provided for @unexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unexpected error: {error}'**
+  String unexpectedError(String error);
+
+  /// No description provided for @loadMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load more templates: {error}'**
+  String loadMoreFailed(String error);
+
+  /// No description provided for @databaseInitializationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to initialize database: {error}'**
+  String databaseInitializationFailed(String error);
+
+  /// No description provided for @createTemplateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create template: {error}'**
+  String createTemplateFailed(String error);
+
+  /// No description provided for @templateIdCannotBeNull.
+  ///
+  /// In en, this message translates to:
+  /// **'Template ID cannot be null'**
+  String get templateIdCannotBeNull;
+
+  /// No description provided for @updateTemplateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update template: {error}'**
+  String updateTemplateFailed(String error);
+
+  /// No description provided for @deleteTemplateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete template: {error}'**
+  String deleteTemplateFailed(String error);
+
+  /// No description provided for @loadTemplatesFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load templates: {error}'**
+  String loadTemplatesFailed(String error);
+
+  /// No description provided for @loadTagsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load tags: {error}'**
+  String loadTagsFailed(String error);
+
+  /// No description provided for @unknownError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred'**
+  String get unknownError;
 }
 
 class _AppLocalizationsDelegate

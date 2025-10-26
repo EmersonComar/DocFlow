@@ -24,6 +24,13 @@
   "noTemplatesFound": "Nenhum template encontrado.",
   "confirmDeleteTitle": "Confirmar Exclusão",
   "confirmDeleteContent": "Você tem certeza que deseja deletar o template \"{title}\"?",
+  "@confirmDeleteContent": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "cancelButton": "Cancelar",
   "delete": "Deletar",
 
@@ -31,5 +38,72 @@
   "copy": "Copiar",
 
   "changeTheme": "Alterar Tema",
-  "newTemplateFab": "Novo Template"
+  "newTemplateFab": "Novo Template",
+
+  "unexpectedError": "Erro inesperado: {error}",
+  "@unexpectedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadMoreFailed": "Falha ao carregar mais templates: {error}",
+  "@loadMoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "databaseInitializationFailed": "Falha ao inicializar banco de dados: {error}",
+  "@databaseInitializationFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createTemplateFailed": "Falha ao criar template: {error}",
+  "@createTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "templateIdCannotBeNull": "ID do template não pode ser nulo",
+  "updateTemplateFailed": "Falha ao atualizar template: {error}",
+  "@updateTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTemplateFailed": "Falha ao deletar template: {error}",
+  "@deleteTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadTemplatesFailed": "Falha ao carregar templates: {error}",
+  "@loadTemplatesFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadTagsFailed": "Falha ao carregar tags: {error}",
+  "@loadTagsFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownError": "Ocorreu um erro desconhecido"
 }

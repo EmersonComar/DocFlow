@@ -66,7 +66,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirmDeleteTitle => 'Confirmar Eliminación';
 
   @override
-  String confirmDeleteContent(Object title) {
+  String confirmDeleteContent(String title) {
     return '¿Estás seguro que quieres eliminar la plantilla \"$title\"?';
   }
 
@@ -87,4 +87,51 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get newTemplateFab => 'Nueva Plantilla';
+
+  @override
+  String unexpectedError(String error) {
+    return 'Error inesperado: $error';
+  }
+
+  @override
+  String loadMoreFailed(String error) {
+    return 'Error al cargar más plantillas: $error';
+  }
+
+  @override
+  String databaseInitializationFailed(String error) {
+    return 'Error al inicializar la base de datos: $error';
+  }
+
+  @override
+  String createTemplateFailed(String error) {
+    return 'Error al crear la plantilla: $error';
+  }
+
+  @override
+  String get templateIdCannotBeNull =>
+      'El ID de la plantilla no puede ser nulo';
+
+  @override
+  String updateTemplateFailed(String error) {
+    return 'Error al actualizar la plantilla: $error';
+  }
+
+  @override
+  String deleteTemplateFailed(String error) {
+    return 'Error al eliminar la plantilla: $error';
+  }
+
+  @override
+  String loadTemplatesFailed(String error) {
+    return 'Error al cargar las plantillas: $error';
+  }
+
+  @override
+  String loadTagsFailed(String error) {
+    return 'Error al cargar las etiquetas: $error';
+  }
+
+  @override
+  String get unknownError => 'Ocurrió un error desconocido';
 }

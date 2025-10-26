@@ -18,11 +18,12 @@ O DocFlow foi projetado para ajudar desenvolvedores, escritores e profissionais 
 
 ## Tecnologias Utilizadas
 
+- **Linguagem:** [Dart](https://dart.dev/)
 - **Framework:** [Flutter](https://flutter.dev/)
 - **Gerenciamento de Estado:** [Provider](https://pub.dev/packages/provider)
-- **Banco de Dados:** [sqflite](https://pub.dev/packages/sqflite) com [sqflite_common_ffi](https://pub.dev/packages/sqflite_common_ffi) para suporte desktop (Windows, macOS, Linux).
-- **Renderização de Markdown:** [markdown_widget](https://pub.dev/packages/markdown_widget)
-- **Destaque de Sintaxe:** [flutter_highlighter](https://pub.dev/packages/flutter_highlighter)
+- **Banco de Dados:** [sqflite](https://pub.dev/packages/sqflite) com [sqflite_common_ffi](https://pub.dev/packages/sqflite_common_ffi) para suporte desktop.
+- **Renderização de Markdown:** [gpt_markdown](https://pub.dev/packages/gpt_markdown)
+- **Internacionalização:** [flutter_localizations](https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html)
 - **Design:** [Material 3](https://m3.material.io/)
 
 ## Instalação (linux via Snap)

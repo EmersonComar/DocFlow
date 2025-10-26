@@ -3,104 +3,104 @@ import 'local_database.dart';
 
 class InitialData {
   static const tutorialTemplate = TemplateModel(
-    titulo: 'Tutorial: Como Usar o DocFlow',
-    conteudo: '''Bem-vindo ao DocFlow! Este tutorial rápido irá guiá-lo pelas funcionalidades principais:
-1.  **Adicionar Novo Template:** Clique no botão de '+' no canto inferior direito para criar uma nova anotação ou template. Preencha o título, conteúdo e adicione tags para facilitar a organização.
-2.  **Buscar Templates:** Use a barra de pesquisa no painel esquerdo para encontrar templates por título ou conteúdo.
-3.  **Filtrar por Tags:** No painel esquerdo, você pode selecionar tags para filtrar os templates e ver apenas aqueles que correspondem às tags escolhidas.
-4.  **Editar Template:** Clique no ícone de três pontos ao lado de um template e selecione "Editar".
-5.  **Deletar Template:** Clique no ícone de três pontos ao lado de um template e selecione "Deletar".
-6.  **Copiar Conteúdo:** Use o botão 'Copiar' dentro de cada template para copiar rapidamente seu conteúdo para a área de transferência.
-7.  **Alterar Tema (Claro/Escuro):** No canto superior direito da barra de aplicativos, clique no ícone de sol/lua para alternar entre o tema claro e escuro.
-8.  **Alterar idioma:** No canto superior direito também terá um campo para alterar o idioma da aplicação.
+    titulo: 'Tutorial: How to Use DocFlow',
+    conteudo: '''Welcome to DocFlow! This quick tutorial will guide you through the main features:
+1.  **Add New Template:** Click the “+” button in the bottom right corner to create a new annotation or template. Fill in the title, content, and add tags for easy organisation.
+2.  **Search Templates:** Use the search bar on the left panel to find templates by title or content.
+3.  **Filter by Tags:** In the left panel, you can select tags to filter templates and see only those that match the chosen tags.
+4.  **Edit Template:** Click the three dots icon next to a template and select “Edit”.
+5.  **Delete Template:** Click on the three dots icon next to a template and select ‘Delete’.
+6.  **Copy Content:** Use the “Copy” button within each template to quickly copy its content to the clipboard.
+7.  **Change Theme (Light/Dark):** In the top right corner of the application bar, click on the sun/moon icon to switch between light and dark themes.
+8.  **Change Language:** In the top right corner, there is also a field to change the application language.
 
-Esperamos que você aproveite o DocFlow!''',
+We hope you enjoy DocFlow!''',
     tags: ['tutorial'],
   );
 
   static const markdownGuide = TemplateModel(
-      titulo: 'Guia Markdown',
-      conteudo: '''# Título Nível 1
-## Título Nível 2
-### Título Nível 3
-#### Título Nível 4
-##### Título Nível 5
-###### Título Nível 6
+      titulo: 'Markdown Guide',
+      conteudo: '''# Level 1 heading
+## Level 2 heading
+### Level 3 heading
+#### Level 4 heading
+##### Level 5 heading
+###### Level 6 heading
 
-## Ênfase de Texto
-**Texto em negrito** 
-*Texto em itálico* 
-***Negrito e itálico***
-~~Texto riscado~~
+## Text emphasis
+**Bold text** 
+*Italic text* 
+***Bold and italicised text***
+~~Strikethrough text~~
 
-## Listas
-### Lista não ordenada
+## Lists
+### Unordered list
 - Item 1
 - Item 2
-  - Subitem 2.1
-  - Subitem 2.2
+  - Sub-item 2.1
+  - Sub-item 2.2
 - Item 3
 
-### Lista ordenada
-1. Primeiro item
-2. Segundo item
-3. Terceiro item
+### Ordered list
+1. First item
+2. Second item
+3. Third item
    1. Subitem 3.1
    2. Subitem 3.2
 
-### Lista de tarefas
-- [x] Tarefa concluída
-- [ ] Tarefa pendente
-- [ ] Outra tarefa
+### Task list
+- [x] Task completed
+- [ ] Task pending
+- [ ] Other task
 
 ### Radio button
-( ) não marcado
-(x) marcado
+( ) unchecked
+(x) checked
 
-## Citações
-> Esta é uma citação.
-> Pode ter múltiplas linhas.
->> Citação aninhada
+## Quotations
+> This is a quotation.
+> It can have multiple lines.
+>> Nested quotation
 
-## Código
-Código inline: `var x = 10;`
+## Code
+Inline code: `var x = 10;`
 
-Bloco de código:
+Code block:
 ```
-function exemplo() {
+function example() {
   return true;
 }
 ```
 
-Bloco com sintaxe:
+Block with syntax:
 ```dart
 void main() {
-  print('Hello, World!');
+  print(“Hello, World!”);
 }
 ```
 
-## Tabelas
-| Coluna 1 | Coluna 2 | Coluna 3 |
+## Tables
+| Column 1 | Column 2 | Column 3 |
 |----------|----------|----------|
-| Célula 1 | Célula 2 | Célula 3 |
-| Dado A   | Dado B   | Dado C   |
+| Cell 1 | Cell 2 | Cell 3 |
+| Data A   | Data B   | Data C   |
 
-## Linhas Horizontais
+## Horizontal Lines
 ---
 ***
 ___
 
-## Caracteres de Escape
-Use \\ para escapar caracteres especiais: \\* \\_ \\# \\[ \\]
+## Escape Characters
+Use \\ to escape special characters: \\* \\_ \\# \\[ \\]
 
-## Parágrafos
-Este é um parágrafo normal.
+## Paragraphs
+This is a normal paragraph.
 
-Este é outro parágrafo separado por linha em branco.
+This is another paragraph separated by a blank line.
 
-## Quebra de Linha
-Linha 1  
-Linha 2 (duas espaços no final da linha anterior)''',
+## Line Break
+Line 1  
+Line 2 (two spaces at the end of the previous line)''',
       tags: ['markdown'],
     );
 }

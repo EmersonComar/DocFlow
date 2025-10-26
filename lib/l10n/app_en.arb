@@ -24,6 +24,13 @@
   "noTemplatesFound": "No templates found.",
   "confirmDeleteTitle": "Confirm Deletion",
   "confirmDeleteContent": "Are you sure you want to delete the template \"{title}\"?",
+  "@confirmDeleteContent": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "cancelButton": "Cancel",
   "delete": "Delete",
 
@@ -31,5 +38,72 @@
   "copy": "Copy",
 
   "changeTheme": "Change Theme",
-  "newTemplateFab": "New Template"
+  "newTemplateFab": "New Template",
+
+  "unexpectedError": "Unexpected error: {error}",
+  "@unexpectedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadMoreFailed": "Failed to load more templates: {error}",
+  "@loadMoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "databaseInitializationFailed": "Failed to initialize database: {error}",
+  "@databaseInitializationFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createTemplateFailed": "Failed to create template: {error}",
+  "@createTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "templateIdCannotBeNull": "Template ID cannot be null",
+  "updateTemplateFailed": "Failed to update template: {error}",
+  "@updateTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTemplateFailed": "Failed to delete template: {error}",
+  "@deleteTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadTemplatesFailed": "Failed to load templates: {error}",
+  "@loadTemplatesFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadTagsFailed": "Failed to load tags: {error}",
+  "@loadTagsFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownError": "An unknown error occurred"
 }

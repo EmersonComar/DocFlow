@@ -24,6 +24,13 @@
   "noTemplatesFound": "No se encontraron plantillas.",
   "confirmDeleteTitle": "Confirmar Eliminación",
   "confirmDeleteContent": "¿Estás seguro que quieres eliminar la plantilla \"{title}\"?",
+  "@confirmDeleteContent": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "cancelButton": "Cancelar",
   "delete": "Eliminar",
 
@@ -31,5 +38,72 @@
   "copy": "Copiar",
 
   "changeTheme": "Cambiar Tema",
-  "newTemplateFab": "Nueva Plantilla"
+  "newTemplateFab": "Nueva Plantilla",
+
+  "unexpectedError": "Error inesperado: {error}",
+  "@unexpectedError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadMoreFailed": "Error al cargar más plantillas: {error}",
+  "@loadMoreFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "databaseInitializationFailed": "Error al inicializar la base de datos: {error}",
+  "@databaseInitializationFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createTemplateFailed": "Error al crear la plantilla: {error}",
+  "@createTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "templateIdCannotBeNull": "El ID de la plantilla no puede ser nulo",
+  "updateTemplateFailed": "Error al actualizar la plantilla: {error}",
+  "@updateTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTemplateFailed": "Error al eliminar la plantilla: {error}",
+  "@deleteTemplateFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadTemplatesFailed": "Error al cargar las plantillas: {error}",
+  "@loadTemplatesFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadTagsFailed": "Error al cargar las etiquetas: {error}",
+  "@loadTagsFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownError": "Ocurrió un error desconocido"
 }

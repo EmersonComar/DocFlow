@@ -1,25 +1,26 @@
 abstract class Failure {
-  final String message;
+  final String messageKey;
+  final List<Object> messageArgs;
   final dynamic originalError;
 
-  const Failure(this.message, [this.originalError]);
+  const Failure(this.messageKey, [this.messageArgs = const [], this.originalError]);
 
   @override
-  String toString() => message;
+  String toString() => 'Failure(messageKey: $messageKey, messageArgs: $messageArgs)';
 }
 
 class DatabaseFailure extends Failure {
-  const DatabaseFailure(super.message, [super.originalError]);
+  const DatabaseFailure(super.messageKey, [super.messageArgs = const [], super.originalError]);
 }
 
 class NotFoundFailure extends Failure {
-  const NotFoundFailure(super.message, [super.originalError]);
+  const NotFoundFailure(super.messageKey, [super.messageArgs = const [], super.originalError]);
 }
 
 class ValidationFailure extends Failure {
-  const ValidationFailure(super.message, [super.originalError]);
+  const ValidationFailure(super.messageKey, [super.messageArgs = const [], super.originalError]);
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure(super.message, [super.originalError]);
+  const CacheFailure(super.messageKey, [super.messageArgs = const [], super.originalError]);
 }

@@ -12,6 +12,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   Future<void> loadTheme() async {
     try {
+      await _database.initialize();
       final themeString = await _database.getPreference(_themePrefKey);
       
       _themeMode = switch (themeString) {
@@ -54,6 +55,7 @@ class ThemeNotifier extends ChangeNotifier {
     };
     
     try {
+      await _database.initialize();
       await _database.savePreference(_themePrefKey, themeString);
     } catch (_) {}
   }

@@ -13,7 +13,7 @@ class TemplateProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isLoadingMore = false;
   bool _isInitialized = false;
-  String? _errorMessage;
+  (String, List<Object>)? _error;
   String _searchQuery = '';
   
   final int _pageSize = 10;
@@ -28,7 +28,7 @@ class TemplateProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isLoadingMore => _isLoadingMore;
   bool get isInitialized => _isInitialized;
-  String? get errorMessage => _errorMessage;
+  (String, List<Object>)? get error => _error;
   bool get hasMore => _hasMore;
 
   bool isTemplateExpanded(int? templateId) {
@@ -50,13 +50,13 @@ class TemplateProvider extends ChangeNotifier {
     if (_isInitialized) return;
 
     _isLoading = true;
-    _errorMessage = null;
+    _error = null;
     notifyListeners();
 
     final result = await _repository.ensureInitialized();
     
     if (result.isFailure) {
-      _errorMessage = result.failure.message;
+      _error = (result.failure.messageKey, result.failure.messageArgs);
       _isLoading = false;
       notifyListeners();
       return;
@@ -68,7 +68,7 @@ class TemplateProvider extends ChangeNotifier {
 
   Future<void> refreshTemplates() async {
     _isLoading = true;
-    _errorMessage = null;
+    _error = null;
     _page = 0;
     _hasMore = true;
     _templates = [];
@@ -96,10 +96,10 @@ class TemplateProvider extends ChangeNotifier {
         _templates = templatesResult.data;
         _hasMore = _templates.length >= _pageSize;
       } else {
-        _errorMessage = templatesResult.failure.message;
+        _error = (templatesResult.failure.messageKey, templatesResult.failure.messageArgs);
       }
     } catch (e) {
-      _errorMessage = 'Erro inesperado: ${e.toString()}';
+      _error = ('unexpectedError', [e.toString()]);
     }
 
     _isLoading = false;
@@ -131,10 +131,10 @@ class TemplateProvider extends ChangeNotifier {
         _templates.addAll(newTemplates);
         _hasMore = newTemplates.length >= _pageSize;
       } else {
-        _errorMessage = result.failure.message;
+        _error = (result.failure.messageKey, result.failure.messageArgs);
       }
     } catch (e) {
-      _errorMessage = 'Falha ao carregar mais templates: ${e.toString()}';
+      _error = ('loadMoreFailed', [e.toString()]);
     }
 
     _isLoadingMore = false;
@@ -157,7 +157,7 @@ class TemplateProvider extends ChangeNotifier {
     if (result.isSuccess) {
       await refreshTemplates();
     } else {
-      _errorMessage = result.failure.message;
+      _error = (result.failure.messageKey, result.failure.messageArgs);
       notifyListeners();
     }
   }
@@ -180,7 +180,7 @@ class TemplateProvider extends ChangeNotifier {
       }
       await refreshTemplates();
     } else {
-      _errorMessage = result.failure.message;
+      _error = (result.failure.messageKey, result.failure.messageArgs);
       notifyListeners();
     }
   }
@@ -203,7 +203,7 @@ class TemplateProvider extends ChangeNotifier {
       }
       await refreshTemplates();
     } else {
-      _errorMessage = result.failure.message;
+      _error = (result.failure.messageKey, result.failure.messageArgs);
       notifyListeners();
     }
   }

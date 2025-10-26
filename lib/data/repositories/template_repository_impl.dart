@@ -28,7 +28,8 @@ class TemplateRepositoryImpl implements TemplateRepository {
       return Result.success(null);
     } catch (e) {
       return Result.failure(DatabaseFailure(
-        'Falha ao inicializar banco de dados: ${e.toString()}',
+        'databaseInitializationFailed',
+        [e.toString()],
         e,
       ));
     }
@@ -44,7 +45,8 @@ class TemplateRepositoryImpl implements TemplateRepository {
       return Result.success(template.copyWith(id: id));
     } catch (e) {
       return Result.failure(DatabaseFailure(
-        'Falha ao criar template: ${e.toString()}',
+        'createTemplateFailed',
+        [e.toString()],
         e,
       ));
     }
@@ -53,7 +55,7 @@ class TemplateRepositoryImpl implements TemplateRepository {
   @override
   Future<Result<Template>> update(Template template) async {
     if (template.id == null) {
-      return Result.failure(const ValidationFailure('Template ID não pode ser nulo'));
+      return Result.failure(const ValidationFailure('templateIdCannotBeNull'));
     }
 
     try {
@@ -64,7 +66,8 @@ class TemplateRepositoryImpl implements TemplateRepository {
       return Result.success(template);
     } catch (e) {
       return Result.failure(DatabaseFailure(
-        'Falha ao atualizar template: ${e.toString()}',
+        'updateTemplateFailed',
+        [e.toString()],
         e,
       ));
     }
@@ -78,7 +81,8 @@ class TemplateRepositoryImpl implements TemplateRepository {
       return Result.success(null);
     } catch (e) {
       return Result.failure(DatabaseFailure(
-        'Falha ao deletar template: ${e.toString()}',
+        'deleteTemplateFailed',
+        [e.toString()],
         e,
       ));
     }
@@ -102,7 +106,8 @@ class TemplateRepositoryImpl implements TemplateRepository {
       return Result.success(models.map((m) => m.toEntity()).toList());
     } catch (e) {
       return Result.failure(DatabaseFailure(
-        'Falha ao carregar templates: ${e.toString()}',
+        'loadTemplatesFailed',
+        [e.toString()],
         e,
       ));
     }
@@ -115,7 +120,8 @@ class TemplateRepositoryImpl implements TemplateRepository {
       return Result.success(tags);
     } catch (e) {
       return Result.failure(DatabaseFailure(
-        'Falha ao carregar tags: ${e.toString()}',
+        'loadTagsFailed',
+        [e.toString()],
         e,
       ));
     }

@@ -114,15 +114,44 @@ class _TemplateListState extends State<_TemplateList> {
     }
   }
 
+  String _getTranslatedErrorMessage(BuildContext context, (String, List<Object>) error) {
+    final l10n = AppLocalizations.of(context)!;
+    final key = error.$1;
+    final args = error.$2;
+
+    switch (key) {
+      case 'unexpectedError':
+        return l10n.unexpectedError(args.isNotEmpty ? args[0] as String : '');
+      case 'loadMoreFailed':
+        return l10n.loadMoreFailed(args.isNotEmpty ? args[0] as String : '');
+      case 'databaseInitializationFailed':
+        return l10n.databaseInitializationFailed(args.isNotEmpty ? args[0] as String : '');
+      case 'createTemplateFailed':
+        return l10n.createTemplateFailed(args.isNotEmpty ? args[0] as String : '');
+      case 'templateIdCannotBeNull':
+        return l10n.templateIdCannotBeNull;
+      case 'updateTemplateFailed':
+        return l10n.updateTemplateFailed(args.isNotEmpty ? args[0] as String : '');
+      case 'deleteTemplateFailed':
+        return l10n.deleteTemplateFailed(args.isNotEmpty ? args[0] as String : '');
+      case 'loadTemplatesFailed':
+        return l10n.loadTemplatesFailed(args.isNotEmpty ? args[0] as String : '');
+      case 'loadTagsFailed':
+        return l10n.loadTagsFailed(args.isNotEmpty ? args[0] as String : '');
+      default:
+        return l10n.unknownError;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TemplateProvider>(
       builder: (context, provider, child) {
-        if (provider.isLoading && !provider.isInitialized) {
+        if (provider.isLoading && provider.templates.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (provider.errorMessage != null) {
+        if (provider.error != null) {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -136,7 +165,7 @@ class _TemplateListState extends State<_TemplateList> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    provider.errorMessage!,
+                    _getTranslatedErrorMessage(context, provider.error!),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.error,

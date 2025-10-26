@@ -19,6 +19,7 @@ class LocaleProvider extends ChangeNotifier {
 
   Future<void> _loadSavedLocale() async {
     try {
+      await _database.initialize();
       final saved = await _database.getPreference('locale');
       if (saved != null && saved.isNotEmpty) {
         _locale = Locale(saved);
@@ -34,6 +35,7 @@ class LocaleProvider extends ChangeNotifier {
     _locale = locale;
     notifyListeners();
     try {
+      await _database.initialize();
       final value = locale == null ? '' : locale.languageCode;
       await _database.savePreference('locale', value);
     } catch (_) {
