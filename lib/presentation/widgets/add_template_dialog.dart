@@ -1,3 +1,6 @@
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +25,7 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
   late final TextEditingController _tagsController;
   
   String _markdownPreview = '';
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -31,22 +35,54 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
     _tagsController = TextEditingController(text: widget.template?.tags.join(', ') ?? '');
     _markdownPreview = _conteudoController.text;
     
-    _conteudoController.addListener(_updateMarkdownPreview);
+    _conteudoController.addListener(_onContentChanged);
   }
 
   @override
   void dispose() {
-    _conteudoController.removeListener(_updateMarkdownPreview);
+    _conteudoController.removeListener(_onContentChanged);
     _tituloController.dispose();
     _conteudoController.dispose();
     _tagsController.dispose();
     super.dispose();
   }
 
+  void _onContentChanged() {
+    _updateMarkdownPreview();
+    if (_errorMessage != null) {
+      setState(() {
+        _errorMessage = null;
+      });
+    }
+  }
+
   void _updateMarkdownPreview() {
     setState(() {
       _markdownPreview = _conteudoController.text;
     });
+  }
+
+  Future<void> _importMarkdown() async {
+    setState(() {
+      _errorMessage = null;
+    });
+
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['md', 'markdown'],
+    );
+
+    if (result != null) {
+      final file = File(result.files.single.path!);
+      try {
+        final content = await file.readAsString();
+        _conteudoController.text = content;
+      } on FileSystemException {
+        setState(() {
+          _errorMessage = AppLocalizations.of(context)!.importMarkdownError;
+        });
+      }
+    }
   }
 
   Future<void> _saveTemplate() async {
@@ -108,49 +144,63 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Column(
                   children: [
                     Expanded(
-                      child: TextFormField(
-                        controller: _conteudoController,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.contentLabel,
-                          border: const OutlineInputBorder(),
-                          filled: true,
-                          alignLabelWithHint: true,
-                        ),
-                        maxLines: null,
-                        expands: true,
-                        textAlignVertical: TextAlignVertical.top,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return AppLocalizations.of(context)!.pleaseInsertContent;
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: colorScheme.outline.withAlpha((255 * 0.2).round()),
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: GptMarkdown(
-                              _markdownPreview,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _conteudoController,
+                              decoration: InputDecoration(
+                                labelText: AppLocalizations.of(context)!.contentLabel,
+                                border: const OutlineInputBorder(),
+                                filled: true,
+                                alignLabelWithHint: true,
+                              ),
+                              maxLines: null,
+                              expands: true,
+                              textAlignVertical: TextAlignVertical.top,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return AppLocalizations.of(context)!.pleaseInsertContent;
+                                }
+                                return null;
+                              },
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: colorScheme.outline.withAlpha((255 * 0.2).round()),
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: GptMarkdown(
+                                    _markdownPreview,
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    if (_errorMessage != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          _errorMessage!,
+                          style: TextStyle(color: Theme.of(context).colorScheme.error),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -175,6 +225,11 @@ class _AddTemplateDialogState extends State<AddTemplateDialog> {
           style: TextButton.styleFrom(
             foregroundColor: colorScheme.onSurface,
           ),
+        ),
+        TextButton.icon(
+          onPressed: _importMarkdown,
+          icon: const Icon(Icons.upload_file),
+          label: Text(AppLocalizations.of(context)!.importMarkdown),
         ),
         ElevatedButton.icon(
           onPressed: _saveTemplate,

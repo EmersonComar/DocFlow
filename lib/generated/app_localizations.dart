@@ -196,6 +196,18 @@ abstract class AppLocalizations {
   /// **'Tags (comma separated)'**
   String get tagsLabel;
 
+  /// No description provided for @importMarkdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Import markdown'**
+  String get importMarkdown;
+
+  /// No description provided for @importMarkdownError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to read the markdown file. Please make sure it is a valid UTF-8 file.'**
+  String get importMarkdownError;
+
   /// No description provided for @tryAgain.
   ///
   /// In en, this message translates to:

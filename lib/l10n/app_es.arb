@@ -19,6 +19,8 @@
   "pleaseInsertTitle": "Por favor, introduce un título",
   "pleaseInsertContent": "Por favor, introduce el contenido",
   "tagsLabel": "Etiquetas (separadas por coma)",
+  "importMarkdown": "Importar markdown",
+  "importMarkdownError": "No se pudo leer el archivo markdown. Asegúrese de que sea un archivo UTF-8 válido.",
 
   "tryAgain": "Intentar de nuevo",
   "noTemplatesFound": "No se encontraron plantillas.",

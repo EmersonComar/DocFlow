@@ -57,6 +57,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tagsLabel => 'Tags (separadas por vírgula)';
 
   @override
+  String get importMarkdown => 'Importar markdown';
+
+  @override
+  String get importMarkdownError =>
+      'Falha ao ler o arquivo markdown. Por favor, verifique se é um arquivo UTF-8 válido.';
+
+  @override
   String get tryAgain => 'Tentar Novamente';
 
   @override

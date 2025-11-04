@@ -19,6 +19,8 @@
   "pleaseInsertTitle": "Please enter a title",
   "pleaseInsertContent": "Please enter the content",
   "tagsLabel": "Tags (comma separated)",
+  "importMarkdown": "Import markdown",
+  "importMarkdownError": "Failed to read the markdown file. Please make sure it is a valid UTF-8 file.",
 
   "tryAgain": "Try Again",
   "noTemplatesFound": "No templates found.",

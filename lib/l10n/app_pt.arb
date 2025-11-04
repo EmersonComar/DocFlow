@@ -19,6 +19,8 @@
   "pleaseInsertTitle": "Por favor, insira um título",
   "pleaseInsertContent": "Por favor, insira o conteúdo",
   "tagsLabel": "Tags (separadas por vírgula)",
+  "importMarkdown": "Importar markdown",
+  "importMarkdownError": "Falha ao ler o arquivo markdown. Por favor, verifique se é um arquivo UTF-8 válido.",
 
   "tryAgain": "Tentar Novamente",
   "noTemplatesFound": "Nenhum template encontrado.",

@@ -57,6 +57,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tagsLabel => 'Tags (comma separated)';
 
   @override
+  String get importMarkdown => 'Import markdown';
+
+  @override
+  String get importMarkdownError =>
+      'Failed to read the markdown file. Please make sure it is a valid UTF-8 file.';
+
+  @override
   String get tryAgain => 'Try Again';
 
   @override
