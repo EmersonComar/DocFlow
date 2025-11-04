@@ -52,3 +52,7 @@ parts:
       - libblkid-dev
       - liblzma-dev
       - libxkbcommon0
+    
+    stage-packages:
+      - zenity
+      - libproxy1v5
